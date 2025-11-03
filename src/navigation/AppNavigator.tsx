@@ -22,7 +22,9 @@ const AppNavigator = () => {
   return (
     // NavigationContainer quản lý trạng thái điều hướng
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator 
+      initialRouteName='Login'
+      screenOptions={{ headerShown: false }}>
         {/* Màn hình chứa Tab Bar (Home, Favorites, Bookings, Profile) */}
         <Stack.Screen 
             name="Tabs" 

@@ -1,0 +1,139 @@
+{
+  "facilities": [
+    { "facilityId": 1, "name": "Free WiFi", "category": "Connectivity" },
+    { "facilityId": 2, "name": "Swimming Pool", "category": "Recreation" },
+    { "facilityId": 3, "name": "Gym", "category": "Fitness" },
+    { "facilityId": 4, "name": "Air Conditioning", "category": "Comfort" },
+    { "facilityId": 5, "name": "Breakfast Included", "category": "Dining" },
+    { "facilityId": 6, "name": "Parking", "category": "Convenience" }
+  ],
+
+  "users": [
+    {
+      "userId": 1,
+      "mobileNumber": "+84901234567",
+      "email": "alice@example.com",
+      "password": "hashed_password_1",
+      "firstName": "Alice",
+      "lastName": "Nguyen",
+      "profileImage": "https://randomuser.me/api/portraits/women/1.jpg"
+    },
+    {
+      "userId": 2,
+      "mobileNumber": "+84909876543",
+      "email": "bob@example.com",
+      "password": "hashed_password_2",
+      "firstName": "Bob",
+      "lastName": "Tran",
+      "profileImage": "https://randomuser.me/api/portraits/men/2.jpg"
+    },
+    {
+      "userId": 3,
+      "mobileNumber": "+84905556677",
+      "email": "carol@example.com",
+      "password": "hashed_password_3",
+      "firstName": "Carol",
+      "lastName": "Pham",
+      "profileImage": "https://randomuser.me/api/portraits/women/3.jpg"
+    }
+  ],
+
+  "accommodations": [
+    {
+      "accomodationId": 1,
+      "title": "Luxury Beach Resort",
+      "description": "A beautiful seaside resort with modern amenities and sea view rooms.",
+      "location": "Nha Trang, Vietnam",
+      "price": 250,
+      "rating": 4.8,
+      "typeOfPlace": "Resort",
+      "numberOfGuest": 4,
+      "image": "https://source.unsplash.com/800x600/?resort,beach",
+      "facilityIds": [1, 2, 4, 5]
+    },
+    {
+      "accomodationId": 2,
+      "title": "Cozy City Apartment",
+      "description": "Modern apartment located in the heart of Ho Chi Minh City.",
+      "location": "Ho Chi Minh City, Vietnam",
+      "price": 90,
+      "rating": 4.5,
+      "typeOfPlace": "Apartment",
+      "numberOfGuest": 2,
+      "image": "https://source.unsplash.com/800x600/?apartment,city",
+      "facilityIds": [1, 4, 6]
+    },
+    {
+      "accomodationId": 3,
+      "title": "Mountain View Villa",
+      "description": "Peaceful villa surrounded by mountains, perfect for family retreats.",
+      "location": "Da Lat, Vietnam",
+      "price": 180,
+      "rating": 4.7,
+      "typeOfPlace": "Villa",
+      "numberOfGuest": 6,
+      "image": "https://source.unsplash.com/800x600/?villa,mountain",
+      "facilityIds": [1, 3, 4, 6]
+    }
+  ],
+
+  "bookings": [
+    {
+      "bookingId": 1,
+      "userId": 1,
+      "accomodationId": 2,
+      "checkInDate": "2025-11-10",
+      "checkOutDate": "2025-11-12",
+      "paymentMethod": "Credit Card",
+      "totalPrice": 180
+    },
+    {
+      "bookingId": 2,
+      "userId": 2,
+      "accomodationId": 1,
+      "checkInDate": "2025-12-01",
+      "checkOutDate": "2025-12-05",
+      "paymentMethod": "PayPal",
+      "totalPrice": 1000
+    },
+    {
+      "bookingId": 3,
+      "userId": 3,
+      "accomodationId": 3,
+      "checkInDate": "2025-11-15",
+      "checkOutDate": "2025-11-18",
+      "paymentMethod": "Bank Transfer",
+      "totalPrice": 540
+    }
+  ],
+
+  "comments": [
+    {
+      "commentId": 1,
+      "userId": 1,
+      "accommodationId": 1,
+      "text": "Amazing place with a stunning view of the beach!",
+      "rating": 5
+    },
+    {
+      "commentId": 2,
+      "userId": 2,
+      "accommodationId": 2,
+      "text": "Great location but the room was a bit small.",
+      "rating": 4
+    },
+    {
+      "commentId": 3,
+      "userId": 3,
+      "accommodationId": 3,
+      "text": "Perfect for a peaceful weekend getaway.",
+      "rating": 5
+    }
+  ],
+
+  "favorites": [
+    { "favoriteId": 1, "userId": 1, "accomodationId": 3 },
+    { "favoriteId": 2, "userId": 2, "accomodationId": 1 },
+    { "favoriteId": 3, "userId": 3, "accomodationId": 2 }
+  ]
+}
