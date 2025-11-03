@@ -10,6 +10,8 @@ const RegisterScreen = ({ navigation }: any) => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [country, setCountry] = useState("+1")
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -33,6 +35,18 @@ const RegisterScreen = ({ navigation }: any) => {
     }, 1500)
   }
 
+  const handleContinue = async () => {
+    if (!phoneNumber || !country) {
+      alert("Please enter your phone number")
+      return
+    }
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+      navigation.replace("Home")
+    }, 1500)
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -41,6 +55,7 @@ const RegisterScreen = ({ navigation }: any) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color="#333" />
           </TouchableOpacity>
+          <Text style={styles.title}>Create an account</Text>
         </View>
 
         {/* Register Form */}
@@ -130,6 +145,58 @@ const RegisterScreen = ({ navigation }: any) => {
             </View>
           </View>
 
+          {/* Phone Input Section */}
+          <Text style={styles.inputLabel}>Enter your mobile number:</Text>
+
+          <View style={styles.phoneInputRow}>
+            <View style={styles.countrySelector}>
+              <Text style={styles.countryCode}>🇺🇸</Text>
+              <Ionicons name="chevron-down" size={18} color="#333" />
+            </View>
+            <TextInput
+              style={styles.phoneInput}
+              placeholder="+1 Mobile number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+              placeholderTextColor="#ccc"
+            />
+          </View>
+
+          {/* Continue Button */}
+          <TouchableOpacity
+            style={[styles.continueButton, isLoading && styles.buttonDisabled]}
+            onPress={handleContinue}
+            disabled={isLoading}
+          >
+            <Text style={styles.continueButtonText}>{isLoading ? "..." : "Continue"}</Text>
+          </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          {/* Social Login */}
+          <View style={styles.socialContainer}>
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-apple" size={20} color="#000" />
+              <Text style={styles.socialButtonText}>Continue with Apple</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-facebook" size={20} color="#1877F2" />
+              <Text style={[styles.socialButtonText, { color: "#1877F2" }]}>Continue with Facebook</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-google" size={20} color="#EA4335" />
+              <Text style={[styles.socialButtonText, { color: "#EA4335" }]}>Continue with Google</Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Terms Checkbox */}
           <TouchableOpacity style={styles.termsCheckbox} onPress={() => setAgreeTerms(!agreeTerms)}>
             <View style={[styles.checkbox, agreeTerms && styles.checkboxChecked]}>
@@ -139,6 +206,12 @@ const RegisterScreen = ({ navigation }: any) => {
               I agree to the <Text style={styles.termsLink}>Terms & Conditions</Text>
             </Text>
           </TouchableOpacity>
+
+          {/* Terms */}
+          <Text style={styles.termsText}>
+            By signing up, you agree to our <Text style={styles.termsLink}>Terms of Service</Text> and{" "}
+            <Text style={styles.termsLink}>Privacy Policy</Text>.
+          </Text>
 
           {/* Register Button */}
           <TouchableOpacity
@@ -174,11 +247,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#333",
   },
   formContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 20,
   },
   title: {
@@ -278,19 +360,104 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 20,
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
     alignItems: "center",
   },
   footerText: {
-    fontSize: 13,
+    fontSize: 14,
     color: "#666",
   },
   signInLink: {
     color: "#FF5A5F",
     fontWeight: "600",
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 16,
+  },
+  phoneInputRow: {
+    flexDirection: "row",
+    marginBottom: 20,
+    gap: 12,
+  },
+  countrySelector: {
+    width: 80,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f9f9f9",
+    gap: 6,
+  },
+  countryCode: {
+    fontSize: 16,
+  },
+  phoneInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 14,
+    color: "#333",
+    backgroundColor: "#f9f9f9",
+  },
+  continueButton: {
+    backgroundColor: "#00BFB3",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  continueButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    gap: 12,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#e0e0e0",
+  },
+  dividerText: {
+    fontSize: 14,
+    color: "#999",
+  },
+  socialContainer: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  socialButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    gap: 12,
+  },
+  socialButtonText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#333",
   },
 })
 

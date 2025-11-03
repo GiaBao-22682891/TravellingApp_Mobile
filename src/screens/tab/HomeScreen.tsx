@@ -1,103 +1,86 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from "react-native"
+"use client"
+
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Image } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import { useEffect, useState } from "react"
+import { dataService, type Accommodation } from "../../services/DataService"
 
 const HomeScreen = () => {
+  const [accommodations, setAccommodations] = useState<Accommodation[]>([])
+
+  useEffect(() => {
+    const data = dataService.getAccommodations()
+    setAccommodations(data)
+  }, [])
+
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.greeting}>Explore the World</Text>
-        <Text style={styles.subheading}>Find your perfect accommodation</Text>
-      </View>
-
-      {/* Search Box */}
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#999" />
-        <TextInput placeholder="Search destinations..." style={styles.searchInput} placeholderTextColor="#999" />
-      </View>
-
-      {/* Quick Filters */}
-      <View style={styles.filtersContainer}>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Ionicons name="filter" size={16} color="#FF5A5F" />
-          <Text style={styles.filterText}>Filter</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Ionicons name="star" size={16} color="#FF5A5F" />
-          <Text style={styles.filterText}>Top Rated</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Ionicons name="pricetag" size={16} color="#FF5A5F" />
-          <Text style={styles.filterText}>Budget</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Featured Accommodations */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Featured Stays</Text>
-
-        <View style={styles.accommodationCard}>
-          <View style={styles.imagePlaceholder}>
-            <Ionicons name="image" size={40} color="#ddd" />
-          </View>
-          <View style={styles.cardContent}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Luxury Beach Villa</Text>
-              <View style={styles.rating}>
-                <Ionicons name="star" size={14} color="#FF5A5F" />
-                <Text style={styles.ratingText}>4.8</Text>
-              </View>
-            </View>
-            <Text style={styles.location}>
-              <Ionicons name="location" size={12} color="#666" /> Maldives
-            </Text>
-            <View style={styles.cardFooter}>
-              <Text style={styles.price}>$299/night</Text>
-              <TouchableOpacity style={styles.viewBtn}>
-                <Text style={styles.viewBtnText}>View</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.accommodationCard}>
-          <View style={styles.imagePlaceholder}>
-            <Ionicons name="image" size={40} color="#ddd" />
-          </View>
-          <View style={styles.cardContent}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Mountain Resort</Text>
-              <View style={styles.rating}>
-                <Ionicons name="star" size={14} color="#FF5A5F" />
-                <Text style={styles.ratingText}>4.6</Text>
-              </View>
-            </View>
-            <Text style={styles.location}>
-              <Ionicons name="location" size={12} color="#666" /> Switzerland
-            </Text>
-            <View style={styles.cardFooter}>
-              <Text style={styles.price}>$199/night</Text>
-              <TouchableOpacity style={styles.viewBtn}>
-                <Text style={styles.viewBtnText}>View</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+        <View style={styles.searchBar}>
+          <Ionicons name="search" size={18} color="#999" />
+          <TextInput
+            placeholder="Anywhere, 23 - 31 May, 2 guests"
+            style={styles.searchInput}
+            placeholderTextColor="#999"
+          />
+          <Ionicons name="options" size={18} color="#999" />
         </View>
       </View>
 
-      {/* Popular Destinations */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Popular This Month</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-          {["Paris", "Tokyo", "Barcelona", "Dubai"].map((dest, idx) => (
-            <TouchableOpacity key={idx} style={styles.destinationCard}>
-              <View style={styles.destImagePlaceholder}>
-                <Text style={styles.destEmoji}>{["🗼", "🗾", "🏛️", "🏙️"][idx]}</Text>
+      {/* Price Toggle */}
+      <View style={styles.priceToggle}>
+        <Text style={styles.priceToggleLabel}>Present total price</Text>
+        <View style={styles.priceToggleLabel}>
+          <Text style={styles.priceToggleSubLabel}>All-inclusive, pre-tax</Text>
+          <View style={styles.checkbox} />
+        </View>
+      </View>
+
+      {/* Categories */}
+      <View style={styles.categoriesContainer}>
+        <TouchableOpacity style={styles.categoryButton}>
+          <Ionicons name="water" size={24} color="#00BFB3" />
+          <Text style={styles.categoryText}>Beach</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryButton}>
+          <Ionicons name="mountain" size={24} color="#00BFB3" />
+          <Text style={styles.categoryText}>Mountain</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.categoryButton}>
+          <Ionicons name="camping" size={24} color="#00BFB3" />
+          <Text style={styles.categoryText}>Camping</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Accommodations List */}
+      <View style={styles.accommodationsList}>
+        {accommodations.slice(0, 5).map((accommodation) => (
+          <View key={accommodation.accomodationId} style={styles.accommodationCard}>
+            <View style={styles.cardImageContainer}>
+              <Image source={{ uri: accommodation.image }} style={styles.cardImage} />
+              <TouchableOpacity style={styles.heartButton}>
+                <Ionicons name="heart-outline" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.cardInfo}>
+              <View style={styles.cardHeader}>
+                <View>
+                  <Text style={styles.cardTitle}>{accommodation.title}</Text>
+                  <View style={styles.cardMeta}>
+                    <Ionicons name="location" size={12} color="#999" />
+                    <Text style={styles.cardLocation}>{accommodation.location}</Text>
+                  </View>
+                </View>
+                <View style={styles.rating}>
+                  <Ionicons name="star" size={14} color="#FFD700" />
+                  <Text style={styles.ratingText}>{accommodation.rating}</Text>
+                </View>
               </View>
-              <Text style={styles.destName}>{dest}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+              <Text style={styles.cardPrice}>${accommodation.price}/night</Text>
+            </View>
+          </View>
+        ))}
       </View>
     </ScrollView>
   )
@@ -108,97 +91,121 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
-  },
-  greeting: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#000",
-  },
-  subheading: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-  },
   searchContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#f0f0f0",
+  },
+  searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 20,
-    marginVertical: 15,
+    backgroundColor: "#fff",
+    borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
   },
   searchInput: {
     flex: 1,
-    marginLeft: 8,
-    fontSize: 14,
-    color: "#000",
+    fontSize: 13,
+    color: "#333",
   },
-  filtersContainer: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    gap: 10,
-    marginBottom: 20,
-  },
-  filterBtn: {
+  priceToggle: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#FF5A5F",
-    gap: 6,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#f9f9f9",
   },
-  filterText: {
+  priceToggleLabel: {
+    fontSize: 13,
+    color: "#333",
+    fontWeight: "500",
+  },
+  priceToggleSubLabel: {
     fontSize: 12,
-    color: "#FF5A5F",
-    fontWeight: "600",
+    color: "#999",
   },
-  section: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+  checkbox: {
+    width: 16,
+    height: 16,
+    borderRadius: 3,
+    backgroundColor: "#00BFB3",
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 15,
-    color: "#000",
+  categoriesContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 16,
+    justifyContent: "space-around",
+  },
+  categoryButton: {
+    alignItems: "center",
+    gap: 8,
+  },
+  categoryText: {
+    fontSize: 12,
+    color: "#666",
+    fontWeight: "500",
+  },
+  accommodationsList: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
   },
   accommodationCard: {
-    backgroundColor: "#f9f9f9",
+    marginBottom: 16,
     borderRadius: 12,
     overflow: "hidden",
-    marginBottom: 12,
-    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
-  imagePlaceholder: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#e0e0e0",
-    justifyContent: "center",
+  cardImageContainer: {
+    position: "relative",
+    height: 200,
+  },
+  cardImage: {
+    width: "100%",
+    height: "100%",
+  },
+  heartButton: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 50,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     alignItems: "center",
+    justifyContent: "center",
   },
-  cardContent: {
-    flex: 1,
-    padding: 12,
-    justifyContent: "space-between",
+  cardInfo: {
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    marginBottom: 8,
   },
   cardTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#000",
-    flex: 1,
+    color: "#333",
+    marginBottom: 4,
+  },
+  cardMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  cardLocation: {
+    fontSize: 12,
+    color: "#999",
   },
   rating: {
     flexDirection: "row",
@@ -207,58 +214,13 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 12,
-    color: "#FF5A5F",
     fontWeight: "600",
+    color: "#333",
   },
-  location: {
-    fontSize: 12,
-    color: "#666",
-    marginVertical: 4,
-  },
-  cardFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  price: {
-    fontSize: 14,
+  cardPrice: {
+    fontSize: 16,
     fontWeight: "700",
-    color: "#FF5A5F",
-  },
-  viewBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: "#FF5A5F",
-    borderRadius: 6,
-  },
-  viewBtnText: {
-    fontSize: 12,
-    color: "#fff",
-    fontWeight: "600",
-  },
-  horizontalScroll: {
-    marginBottom: 10,
-  },
-  destinationCard: {
-    marginRight: 12,
-    alignItems: "center",
-  },
-  destImagePlaceholder: {
-    width: 80,
-    height: 80,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  destEmoji: {
-    fontSize: 32,
-  },
-  destName: {
-    fontSize: 12,
-    color: "#000",
-    fontWeight: "600",
+    color: "#333",
   },
 })
 

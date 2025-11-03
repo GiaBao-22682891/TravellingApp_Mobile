@@ -1,5 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from "react-native"
+"use client"
+
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import { useEffect, useState } from "react"
+import { dataService, type Accommodation } from "../../services/DataService"
 
 interface FavoriteItem {
   id: string
@@ -11,46 +15,22 @@ interface FavoriteItem {
 }
 
 const FavoriteScreen = () => {
-  const favorites: FavoriteItem[] = [
-    {
-      id: "1",
-      title: "Luxury Beach Villa",
-      location: "Maldives",
-      rating: 4.8,
-      price: 299,
-    },
-    {
-      id: "2",
-      title: "Mountain Cabin",
-      location: "Switzerland",
-      rating: 4.7,
-      price: 189,
-    },
-    {
-      id: "3",
-      title: "Tropical Paradise",
-      location: "Bali",
-      rating: 4.9,
-      price: 159,
-    },
-    {
-      id: "4",
-      title: "City Apartment",
-      location: "New York",
-      rating: 4.5,
-      price: 249,
-    },
-  ]
+  const [favorites, setFavorites] = useState<Accommodation[]>([])
 
-  const removeFavorite = (id: string) => {
+  useEffect(() => {
+    // Simulating user ID 1 - in real app would come from auth
+    const data = dataService.getFavoritesByUser(1)
+    setFavorites(data)
+  }, [])
+
+  const removeFavorite = (id: number) => {
     console.log("[v0] Removed favorite:", id)
+    setFavorites(favorites.filter((fav) => fav.accomodationId !== id))
   }
 
-  const renderFavoriteItem = ({ item }: { item: FavoriteItem }) => (
-    <View style={styles.favoriteCard}>
-      <View style={styles.imagePlaceholder}>
-        <Ionicons name="image" size={40} color="#ddd" />
-      </View>
+  const renderFavoriteItem = ({ item }: { item: Accommodation }) => (
+    <View key={item.accomodationId.toString()} style={styles.favoriteCard}>
+      <Image source={{ uri: item.image }} style={styles.imagePlaceholder} />
       <View style={styles.cardContent}>
         <View style={styles.cardHeader}>
           <View>
@@ -59,7 +39,7 @@ const FavoriteScreen = () => {
               <Ionicons name="location" size={12} color="#666" /> {item.location}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => removeFavorite(item.id)}>
+          <TouchableOpacity onPress={() => removeFavorite(item.accomodationId)}>
             <Ionicons name="heart" size={20} color="#FF5A5F" />
           </TouchableOpacity>
         </View>
@@ -86,7 +66,7 @@ const FavoriteScreen = () => {
       <FlatList
         data={favorites}
         renderItem={renderFavoriteItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.accomodationId.toString()}
         contentContainerStyle={styles.listContent}
         scrollEnabled={false}
       />

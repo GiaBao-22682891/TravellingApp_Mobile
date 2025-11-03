@@ -1,50 +1,18 @@
+"use client"
+
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
-
-interface Booking {
-  id: string
-  title: string
-  location: string
-  checkIn: string
-  checkOut: string
-  nights: number
-  totalPrice: number
-  status: "upcoming" | "completed" | "cancelled"
-}
+import { useEffect, useState } from "react"
+import { dataService } from "../../services/DataService"
 
 const BookingScreen = () => {
-  const bookings: Booking[] = [
-    {
-      id: "B1",
-      title: "Luxury Beach Villa",
-      location: "Maldives",
-      checkIn: "Dec 15, 2024",
-      checkOut: "Dec 22, 2024",
-      nights: 7,
-      totalPrice: 2093,
-      status: "upcoming",
-    },
-    {
-      id: "B2",
-      title: "Mountain Resort",
-      location: "Switzerland",
-      checkIn: "Nov 20, 2024",
-      checkOut: "Nov 27, 2024",
-      nights: 7,
-      totalPrice: 1393,
-      status: "completed",
-    },
-    {
-      id: "B3",
-      title: "City Hotel",
-      location: "Paris",
-      checkIn: "Jan 10, 2025",
-      checkOut: "Jan 15, 2025",
-      nights: 5,
-      totalPrice: 950,
-      status: "upcoming",
-    },
-  ]
+  const [bookings, setBookings] = useState<any[]>([])
+
+  useEffect(() => {
+    // Simulating user ID 1 - in real app would come from auth
+    const data = dataService.getBookingsByUser(1)
+    setBookings(data)
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -75,13 +43,13 @@ const BookingScreen = () => {
   const upcomingBookings = bookings.filter((b) => b.status === "upcoming")
   const completedBookings = bookings.filter((b) => b.status === "completed")
 
-  const BookingCard = ({ booking }: { booking: Booking }) => (
+  const BookingCard = ({ booking }: { booking: any }) => (
     <View style={styles.bookingCard}>
       <View style={styles.cardTop}>
         <View>
-          <Text style={styles.bookingTitle}>{booking.title}</Text>
+          <Text style={styles.bookingTitle}>{"Accommodation " + booking.accommodationId}</Text>
           <Text style={styles.bookingLocation}>
-            <Ionicons name="location" size={12} color="#666" /> {booking.location}
+            <Ionicons name="location" size={12} color="#666" /> Check-in: {booking.checkIn}
           </Text>
         </View>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(booking.status) + "20" }]}>

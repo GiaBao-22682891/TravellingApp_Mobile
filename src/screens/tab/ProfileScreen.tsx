@@ -1,5 +1,9 @@
+"use client"
+
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from "react-native"
 import Ionicons from "react-native-vector-icons/Ionicons"
+import { useEffect, useState } from "react"
+import { dataService, type User } from "../../services/DataService"
 
 interface MenuItem {
   id: string
@@ -9,14 +13,16 @@ interface MenuItem {
 }
 
 const ProfileScreen = () => {
-  const user = {
-    name: "John Traveler",
-    email: "john@example.com",
-    phone: "+1 234 567 8900",
-    location: "New York, USA",
-    avatar: null,
-    totalBookings: 12,
-    totalSpent: 3500,
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    // Simulating user ID 1 - in real app would come from auth
+    const userData = dataService.getUserById(1)
+    setUser(userData || null)
+  }, [])
+
+  if (!user) {
+    return <Text>Loading...</Text>
   }
 
   const menuItems: MenuItem[] = [
