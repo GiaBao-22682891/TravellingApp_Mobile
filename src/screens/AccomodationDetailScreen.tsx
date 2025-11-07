@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { View, ScrollView, Image, Text, TouchableOpacity, StyleSheet } from "react-native"
 import { useNavigation, useRoute } from "@react-navigation/native"

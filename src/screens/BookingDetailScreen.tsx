@@ -1,7 +1,5 @@
-"use client"
-
 import { useState } from "react"
-import { View, ScrollView, Image, Text, TouchableOpacity, StyleSheet } from "react-native"
+import { View, ScrollView, Image, Text, TouchableOpacity, StyleSheet, Alert } from "react-native"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { Ionicons } from "@expo/vector-icons"
@@ -16,13 +14,64 @@ const BookingDetailScreen = () => {
 
   const [paymentOption, setPaymentOption] = useState<"full" | "partial">("full")
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "card">("cash")
+  const [isLoading, setIsLoading] = useState(false)
 
   // Calculate price details
-  const basePrice = accommodation.price
+  const basePrice = accommodation?.price || 0
   const kayakFee = 5
   const parkingFee = 5
   const totalPrice = basePrice + kayakFee + parkingFee
-  const depositAmount = Math.ceil(totalPrice * 0.5)
+
+  const handleBookingSubmit = async () => {
+    if (!accommodation) return
+
+    setIsLoading(true)
+    try {
+      // Create reference number
+      const referenceNumber = String(Math.floor(Math.random() * 10000000000000)).padStart(14, "0")
+
+      // Get current date and time
+      const now = new Date()
+      const bookingDate = now.toLocaleDateString("en-GB") // DD-MM-YYYY
+      const bookingTime = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+
+      // Convert payment method for storage
+      const paymentMethodDisplay = paymentMethod === "card" ? "Credit card" : "Cash"
+
+      // Submit booking to API
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accommodationId: accommodation.accomodationId,
+          paymentMethod: paymentMethodDisplay,
+          totalPrice: totalPrice,
+          paymentOption: paymentOption,
+        }),
+      })
+
+      if (!response.ok) throw new Error("Booking failed")
+
+      const bookingData = await response.json()
+
+      // Navigate to success screen with booking details
+      navigation.navigate("Success", {
+        bookingId: bookingData.bookingId,
+        referenceNumber: referenceNumber,
+        bookingDate: bookingDate,
+        bookingTime: bookingTime,
+        paymentMethod: paymentMethodDisplay,
+        amount: totalPrice,
+      })
+    } catch (error) {
+      console.error("[v0] Booking error:", error)
+      Alert.alert("Error", "Failed to complete booking. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   if (!accommodation) {
     return (
@@ -56,7 +105,6 @@ const BookingDetailScreen = () => {
             <View style={styles.ratingRow}>
               <Ionicons name="star" size={16} color="#FFB800" />
               <Text style={styles.rating}>{accommodation.rating.toFixed(1)}</Text>
-              <Text style={styles.reviewCount}>(262 reviews)</Text>
             </View>
           </View>
           <Image source={{ uri: accommodation.image }} style={styles.summaryImage} />
@@ -100,9 +148,7 @@ const BookingDetailScreen = () => {
           <Text style={styles.sectionTitle}>Price details</Text>
 
           <View style={styles.priceDetail}>
-            <Text style={styles.priceDetailLabel}>
-              ${accommodation.price}
-            </Text>
+            <Text style={styles.priceDetailLabel}>${accommodation.price}</Text>
             <Text style={styles.priceDetailValue}>${basePrice}</Text>
           </View>
 
@@ -128,14 +174,19 @@ const BookingDetailScreen = () => {
 
       {/* Book Now Button - Fixed at Bottom */}
       <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Book now</Text>
+        <TouchableOpacity
+          style={[styles.bookButton, isLoading && styles.bookButtonDisabled]}
+          onPress={handleBookingSubmit}
+          disabled={isLoading}
+        >
+          <Text style={styles.bookButtonText}>{isLoading ? "Processing..." : "Book now"}</Text>
         </TouchableOpacity>
       </View>
     </View>
   )
 }
 
+// ... existing styles ...
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -221,32 +272,14 @@ const styles = StyleSheet.create({
     color: "#1a1a1a",
     marginBottom: 12,
   },
-  tripItem: {
+  paymentMethodOption: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#f5f5f5",
   },
-  tripLabel: {
-    fontSize: 12,
-    color: "#999",
-    marginBottom: 4,
-  },
-  tripValue: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1a1a1a",
-  },
-  paymentOption: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f5f5f5",
-  },
-  paymentOptionSelected: {
+  paymentMethodSelected: {
     backgroundColor: "#f9fafb",
     marginHorizontal: -16,
     paddingHorizontal: 16,
@@ -267,32 +300,6 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     backgroundColor: "#00BCD4",
-  },
-  paymentOptionContent: {
-    flex: 1,
-  },
-  paymentOptionTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1a1a1a",
-    marginBottom: 4,
-  },
-  paymentOptionDesc: {
-    fontSize: 12,
-    color: "#999",
-    lineHeight: 16,
-  },
-  paymentMethodOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f5f5f5",
-  },
-  paymentMethodSelected: {
-    backgroundColor: "#f9fafb",
-    marginHorizontal: -16,
-    paddingHorizontal: 16,
   },
   paymentMethodContent: {
     flexDirection: "row",
@@ -349,6 +356,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
+  },
+  bookButtonDisabled: {
+    opacity: 0.6,
   },
   bookButtonText: {
     fontSize: 16,

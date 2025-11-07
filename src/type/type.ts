@@ -1,5 +1,3 @@
-import { StringHashMap } from "expo"
-
 export type Facility = {
   facilityId: number
   name: string
@@ -42,7 +40,7 @@ export type Booking = {
   userId: number
   accomodationId: number
   bookingDate: string
-  bookingTime: StringHashMap
+  bookingTime: string
   paymentMethod: string
   totalPrice: number
 }
@@ -62,7 +60,15 @@ export type RootStackParamList = {
       }
     | undefined
   AccommodationDetail: { accommodationId: number }
-  BookingDetail: { accommodation: Accommodation; checkInDate?: string; checkOutDate?: string } 
+  BookingDetail: { accommodation: Accommodation; checkInDate?: string; checkOutDate?: string }
+  Success: {
+    bookingId: number
+    referenceNumber: string
+    bookingDate: string
+    bookingTime: string
+    paymentMethod: string
+    amount: number
+  }
   Login: undefined
   Register: undefined
 }

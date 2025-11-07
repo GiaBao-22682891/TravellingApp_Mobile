@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, SafeAreaView, Alert } from "react-native"
 import { type NavigationProp, useNavigation } from "@react-navigation/native"

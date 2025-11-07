@@ -1,5 +1,3 @@
-"use client"
-
 import { View, Text, StyleSheet, FlatList, TextInput, ActivityIndicator } from "react-native"
 import { useFetch } from "../../hook/useFetch"
 import type { Accommodation, Favorite } from "../../type/type"

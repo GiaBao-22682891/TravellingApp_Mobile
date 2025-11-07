@@ -1,5 +1,3 @@
-"use client"
-
 import { createContext, useState, useContext, type ReactNode } from "react"
 import type { User } from "../type/type"
 
@@ -26,9 +24,5 @@ export const useUser = () => {
   if (context === undefined) {
     throw new Error("useUser must be used within a UserProvider")
   }
-  return {
-    user: context.currentUser,
-    setUser: context.setCurrentUser,
-    logout: context.logout,
-  }
+  return context
 }

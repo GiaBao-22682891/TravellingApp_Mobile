@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { View, Text, Image, StyleSheet, FlatList } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
