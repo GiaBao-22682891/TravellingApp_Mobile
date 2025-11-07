@@ -4,7 +4,7 @@ import { TabParamList } from '../type/type';
 import Home from '../screens/tab/HomeScreen';
 import Profile from '../screens/tab/ProfileScreen';
 import BookingScreen from '../screens/tab/BookingScreen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { View } from 'react-native';
 import Favorite from '../screens/tab/FavoriteScreen';
 
@@ -15,7 +15,7 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#FF5A5F', // Màu du lịch
+        tabBarActiveTintColor: '#5ad6ffff',
         tabBarIcon: ({ color, size }) => {
           let iconName = ""
 
