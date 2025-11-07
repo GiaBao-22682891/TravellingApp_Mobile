@@ -1,26 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  Alert,
-} from "react-native"
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, ScrollView, Alert } from "react-native"
 import { useNavigation, type NavigationProp } from "@react-navigation/native"
 import type { RootStackParamList } from "../type/type"
 import { useFetch } from "../hook/useFetch"
 import type { User } from "../type/type"
+import { useUser } from "../context/UserContext"
 
 type AuthMode = "phone" | "google"
 
 const LoginScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+  const { setCurrentUser } = useUser()
 
   const { data: users } = useFetch<User[]>("/users")
 
@@ -45,7 +37,8 @@ const LoginScreen = () => {
 
     if (user) {
       Alert.alert("Success", `Welcome back, ${user.firstName}!`)
-      navigation.navigate("Tabs", { screen: "Home", params: { user } })
+      setCurrentUser(user)
+      navigation.navigate("Tabs", { screen: "Home" })
     } else {
       Alert.alert("Error", "Invalid phone number or password")
     }
@@ -66,7 +59,8 @@ const LoginScreen = () => {
 
     if (user) {
       Alert.alert("Success", `Welcome back, ${user.firstName}!`)
-      navigation.navigate("Tabs", { screen: "Profile", params: { user } })
+      setCurrentUser(user)
+      navigation.navigate("Tabs", { screen: "Home" })
     } else {
       Alert.alert("Error", "Invalid email or password")
     }

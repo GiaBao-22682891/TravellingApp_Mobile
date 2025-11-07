@@ -2,9 +2,14 @@
 
 import type React from "react"
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native"
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons"
 import type { Accommodation } from "../type/type"
 import { useState } from "react"
+import { useNavigation } from "@react-navigation/native"
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import type { RootStackParamList } from "../type/type"
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>
 
 interface AccommodationCardProps {
   accommodation: Accommodation
@@ -12,14 +17,19 @@ interface AccommodationCardProps {
 }
 
 const AccommodationCard: React.FC<AccommodationCardProps> = ({ accommodation, onPress }) => {
+  const navigation = useNavigation<NavigationProp>()
   const [isFavorite, setIsFavorite] = useState(false)
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite)
   }
 
+  const handlePress = () => {
+    navigation.navigate("AccommodationDetail", { accommodationId: accommodation.accomodationId })
+  }
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
+    <TouchableOpacity onPress={handlePress} style={styles.cardContainer}>
       <View style={styles.cardWrapper}>
         {/* Image Container */}
         <View style={styles.imageContainer}>
@@ -27,25 +37,8 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ accommodation, on
 
           {/* Heart Icon - Top Right */}
           <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
-            {/* <Heart
-              size={24}
-              color={isFavorite ? "#FF6B6B" : "#999"}
-              fill={isFavorite ? "#FF6B6B" : "none"}
-              strokeWidth={2}
-            /> */}
-            <Ionicons
-              name={isFavorite? "heart" : "heart-outline"}
-              size={24}
-              color = {isFavorite? "#FF6B6B" : "#999"}
-            />
+            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color={isFavorite ? "#FF6B6B" : "#999"} />
           </TouchableOpacity>
-
-          {/* Pagination Dots */}
-          <View style={styles.dotsContainer}>
-            <View style={styles.dot} />
-            <View style={[styles.dot, styles.dotInactive]} />
-            <View style={[styles.dot, styles.dotInactive]} />
-          </View>
         </View>
 
         {/* Content */}

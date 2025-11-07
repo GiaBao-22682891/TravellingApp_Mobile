@@ -58,7 +58,6 @@ const HomeScreen = () => {
           {/* Search Bar */}
           <View style={styles.searchBar}>
             <Ionicons name="search-outline" size={20} color="#999" />
-            {/* <Search size={20} color="#999" /> */}
             <TextInput
               placeholder="Where do you want to stay?"
               placeholderTextColor="#999"

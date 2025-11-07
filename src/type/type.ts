@@ -1,3 +1,5 @@
+import { StringHashMap } from "expo"
+
 export type Facility = {
   facilityId: number
   name: string
@@ -32,18 +34,17 @@ export type Accommodation = {
   typeOfPlace: string
   numberOfGuest: number
   image: string
-  facilityIds: Facility[]
+  facilityIds: number[] // Changed from Facility[] to number[]
 }
 
 export type Booking = {
   bookingId: number
   userId: number
   accomodationId: number
-  checkInDate: string
-  checkOutDate: string
+  bookingDate: string
+  bookingTime: StringHashMap
   paymentMethod: string
   totalPrice: number
-  //   status: 'Confirmed' | 'Pending' | 'Cancelled';
 }
 
 export type Favorite = {
@@ -61,8 +62,7 @@ export type RootStackParamList = {
       }
     | undefined
   AccommodationDetail: { accommodationId: number }
-  BookingDetail: { bookingId: number }
-  Filter: undefined
+  BookingDetail: { accommodation: Accommodation; checkInDate?: string; checkOutDate?: string } 
   Login: undefined
   Register: undefined
 }

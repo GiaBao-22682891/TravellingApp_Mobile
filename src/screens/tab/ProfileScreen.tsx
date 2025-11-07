@@ -1,50 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, SafeAreaView, Alert } from "react-native"
-import { NavigationProp, useNavigation, useRoute, type RouteProp } from "@react-navigation/native"
-import type { RootStackParamList, TabParamList, User } from "../../type/type"
-import { useFetch } from "../../hook/useFetch"
-import { Ionicons } from '@expo/vector-icons';
-
-type ProfileScreenRouteProp = RouteProp<TabParamList, "Profile">
+import { type NavigationProp, useNavigation } from "@react-navigation/native"
+import { useUser } from "../../context/UserContext"
+import type { RootStackParamList } from "../../type/type"
+import { Ionicons } from "@expo/vector-icons"
 
 const ProfileScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
-  const route = useRoute<ProfileScreenRouteProp>()
-  const { data: users } = useFetch<User[]>("/users")
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (route.params?.user) {
-      setCurrentUser(route.params.user)
-      setLoading(false)
-    } else if (users && users.length > 0) {
-      // Default to first user if no user passed
-      setCurrentUser(users[0])
-      setLoading(false)
-    }
-  }, [route.params?.user, users])
-
-  const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      { text: "Cancel", onPress: () => {} },
-      {
-        text: "Logout",
-        onPress: () => {
-          setCurrentUser(null)
-          Alert.alert("Success", "You have been logged out")
-          navigation.navigate("Login")
-        },
-        style: "destructive",
-      },
-    ])
-  }
-
-  const handleEditProfile = () => {
-    Alert.alert("Edit Profile", "Edit profile feature coming soon!")
-  }
+  const { currentUser, logout } = useUser()
+  const [loading, setLoading] = useState(false)
 
   if (loading) {
     return (
@@ -66,6 +32,25 @@ const ProfileScreen = () => {
         </View>
       </SafeAreaView>
     )
+  }
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", onPress: () => {} },
+      {
+        text: "Logout",
+        onPress: () => {
+          logout()
+          Alert.alert("Success", "You have been logged out")
+          navigation.navigate("Login")
+        },
+        style: "destructive",
+      },
+    ])
+  }
+
+  const handleEditProfile = () => {
+    Alert.alert("Edit Profile", "Edit profile feature coming soon!")
   }
 
   return (
