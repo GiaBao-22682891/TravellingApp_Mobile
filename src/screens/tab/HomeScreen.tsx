@@ -1,88 +1,106 @@
-"use client"
+import { useState } from "react"
 
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Image } from "react-native"
-import Ionicons from "react-native-vector-icons/Ionicons"
-import { useEffect, useState } from "react"
-import { dataService, type Accommodation } from "../../services/DataService"
+import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList } from "react-native"
+import { Text } from "react-native"
+import { Ionicons } from '@expo/vector-icons';
+import { useFetch } from "../../hook/useFetch"
+import AccommodationCard from "../../components/AccommodationCard"
+import type { Accommodation } from "../../type/type"
 
 const HomeScreen = () => {
-  const [accommodations, setAccommodations] = useState<Accommodation[]>([])
+  const { data: accommodationsData, loading, error } = useFetch<Accommodation[]>("/accommodations")
+  const [selectedCategory, setSelectedCategory] = useState<string>("Beach")
+  const [searchText, setSearchText] = useState("")
 
-  useEffect(() => {
-    const data = dataService.getAccommodations()
-    setAccommodations(data)
-  }, [])
+  // Filter accommodations based on selected category
+  const filteredAccommodations = (accommodationsData || []).filter((item) =>
+    item.typeOfPlace.toLowerCase().includes(selectedCategory.toLowerCase()),
+  )
+
+  const categories = ["Beach", "Mountain", "Camping"]
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "Beach":
+        return "🏖️"
+      case "Mountain":
+        return "⛰️"
+      case "Camping":
+        return "🏕️"
+      default:
+        return "📍"
+    }
+  }
+
+  const renderAccommodation = ({ item }: { item: Accommodation }) => (
+    <AccommodationCard key={item.accomodationId.toString()} accommodation={item} />
+  )
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      {loading ? (
+        <Text style={styles.emptyText}>Loading accommodations...</Text>
+      ) : error ? (
+        <Text style={styles.emptyText}>Error: {error}</Text>
+      ) : (
+        <Text style={styles.emptyText}>No accommodations found in {selectedCategory}</Text>
+      )}
+    </View>
+  )
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={18} color="#999" />
-          <TextInput
-            placeholder="Anywhere, 23 - 31 May, 2 guests"
-            style={styles.searchInput}
-            placeholderTextColor="#999"
-          />
-          <Ionicons name="options" size={18} color="#999" />
-        </View>
-      </View>
-
-      {/* Price Toggle */}
-      <View style={styles.priceToggle}>
-        <Text style={styles.priceToggleLabel}>Present total price</Text>
-        <View style={styles.priceToggleLabel}>
-          <Text style={styles.priceToggleSubLabel}>All-inclusive, pre-tax</Text>
-          <View style={styles.checkbox} />
-        </View>
-      </View>
-
-      {/* Categories */}
-      <View style={styles.categoriesContainer}>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Ionicons name="water" size={24} color="#00BFB3" />
-          <Text style={styles.categoryText}>Beach</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Ionicons name="mountain" size={24} color="#00BFB3" />
-          <Text style={styles.categoryText}>Mountain</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Ionicons name="camping" size={24} color="#00BFB3" />
-          <Text style={styles.categoryText}>Camping</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Accommodations List */}
-      <View style={styles.accommodationsList}>
-        {accommodations.slice(0, 5).map((accommodation) => (
-          <View key={accommodation.accomodationId} style={styles.accommodationCard}>
-            <View style={styles.cardImageContainer}>
-              <Image source={{ uri: accommodation.image }} style={styles.cardImage} />
-              <TouchableOpacity style={styles.heartButton}>
-                <Ionicons name="heart-outline" size={20} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.cardInfo}>
-              <View style={styles.cardHeader}>
-                <View>
-                  <Text style={styles.cardTitle}>{accommodation.title}</Text>
-                  <View style={styles.cardMeta}>
-                    <Ionicons name="location" size={12} color="#999" />
-                    <Text style={styles.cardLocation}>{accommodation.location}</Text>
-                  </View>
-                </View>
-                <View style={styles.rating}>
-                  <Ionicons name="star" size={14} color="#FFD700" />
-                  <Text style={styles.ratingText}>{accommodation.rating}</Text>
-                </View>
-              </View>
-              <Text style={styles.cardPrice}>${accommodation.price}/night</Text>
-            </View>
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header and Search Section */}
+        <View style={styles.headerContainer}>
+          {/* Search Bar */}
+          <View style={styles.searchBar}>
+            <Ionicons name="search-outline" size={20} color="#999" />
+            <TextInput
+              placeholder="Where do you want to stay?"
+              placeholderTextColor="#999"
+              value={searchText}
+              onChangeText={setSearchText}
+              style={styles.searchInput}
+            />
           </View>
-        ))}
-      </View>
-    </ScrollView>
+
+          {/* Category Tabs */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+            <View style={styles.categoriesContainer}>
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category}
+                  onPress={() => setSelectedCategory(category)}
+                  style={styles.categoryButton}
+                >
+                  {/* Category Icon */}
+                  <View style={styles.iconContainer}>
+                    <Text style={styles.icon}>{getCategoryIcon(category)}</Text>
+                  </View>
+
+                  {/* Category Name and Underline */}
+                  <Text style={[styles.categoryText, selectedCategory === category && styles.categoryTextActive]}>
+                    {category}
+                  </Text>
+                  {selectedCategory === category && <View style={styles.underline} />}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* Accommodations List */}
+        <FlatList
+          data={filteredAccommodations}
+          renderItem={renderAccommodation}
+          keyExtractor={(item) => item.accomodationId.toString()}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={renderEmptyState}
+          scrollEnabled={false}
+        />
+      </ScrollView>
+    </View>
   )
 }
 
@@ -91,136 +109,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  searchContainer: {
+  headerContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#f0f0f0",
+    paddingTop: 16,
+    paddingBottom: 8,
   },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
+    marginBottom: 16,
   },
   searchInput: {
     flex: 1,
-    fontSize: 13,
-    color: "#333",
+    marginLeft: 8,
+    fontSize: 16,
+    color: "#1a1a1a",
   },
-  priceToggle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#f9f9f9",
-  },
-  priceToggleLabel: {
-    fontSize: 13,
-    color: "#333",
-    fontWeight: "500",
-  },
-  priceToggleSubLabel: {
-    fontSize: 12,
-    color: "#999",
-  },
-  checkbox: {
-    width: 16,
-    height: 16,
-    borderRadius: 3,
-    backgroundColor: "#00BFB3",
+  categoriesScroll: {
+    marginBottom: 16,
   },
   categoriesContainer: {
     flexDirection: "row",
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    gap: 16,
-    justifyContent: "space-around",
+    gap: 24,
   },
   categoryButton: {
     alignItems: "center",
-    gap: 8,
+    paddingBottom: 8,
   },
-  categoryText: {
-    fontSize: 12,
-    color: "#666",
-    fontWeight: "500",
-  },
-  accommodationsList: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-  },
-  accommodationCard: {
-    marginBottom: 16,
-    borderRadius: 12,
-    overflow: "hidden",
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-  cardImageContainer: {
-    position: "relative",
-    height: 200,
-  },
-  cardImage: {
-    width: "100%",
-    height: "100%",
-  },
-  heartButton: {
-    position: "absolute",
-    top: 12,
-    right: 12,
-    width: 36,
-    height: 36,
-    borderRadius: 50,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cardInfo: {
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+  iconContainer: {
     marginBottom: 8,
   },
-  cardTitle: {
+  icon: {
+    fontSize: 32,
+  },
+  categoryText: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 4,
-  },
-  cardMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  cardLocation: {
-    fontSize: 12,
+    fontWeight: "500",
     color: "#999",
   },
-  rating: {
-    flexDirection: "row",
+  categoryTextActive: {
+    color: "#00BCD4",
+  },
+  underline: {
+    width: 48,
+    height: 4,
+    backgroundColor: "#00BCD4",
+    borderRadius: 2,
+    marginTop: 4,
+  },
+  listContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  emptyContainer: {
     alignItems: "center",
-    gap: 4,
+    paddingVertical: 32,
   },
-  ratingText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#333",
-  },
-  cardPrice: {
+  emptyText: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "#333",
+    color: "#999",
   },
 })
 

@@ -1,463 +1,415 @@
-"use client"
-
 import { useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Image,
+  Alert,
+} from "react-native"
+import { useNavigation, type NavigationProp } from "@react-navigation/native"
+import type { RootStackParamList } from "../type/type"
 
-const RegisterScreen = ({ navigation }: any) => {
-  const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [country, setCountry] = useState("+1")
-  const [agreeTerms, setAgreeTerms] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+type AuthMode = "phone" | "google"
 
-  const handleRegister = async () => {
-    if (!fullName || !email || !password || !confirmPassword || !agreeTerms) {
-      alert("Please fill all fields and accept terms")
-      return
+const RegisterScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+
+  const [authMode, setAuthMode] = useState<AuthMode>("phone")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [mobileNumber, setMobileNumber] = useState("")
+  const [phonePassword, setPhonePassword] = useState("")
+  const [phoneConfirmPassword, setPhoneConfirmPassword] = useState("")
+  const [googleEmail, setGoogleEmail] = useState("")
+  const [googlePassword, setGooglePassword] = useState("")
+  const [googleConfirmPassword, setGoogleConfirmPassword] = useState("")
+
+  const handlePhoneContinue = () => {
+    if (
+      firstName.trim() &&
+      lastName.trim() &&
+      mobileNumber.trim() &&
+      phonePassword.trim() &&
+      phoneConfirmPassword.trim()
+    ) {
+      if (phonePassword !== phoneConfirmPassword) {
+        Alert.alert("Error", "Passwords do not match")
+        return
+      }
+      console.log("Continuing with phone:", { firstName, lastName, mobileNumber, phonePassword })
+      navigation.navigate("Login")
+    } else {
+      Alert.alert("Error", "Please fill in all fields")
     }
-    if (password !== confirmPassword) {
-      alert("Passwords do not match")
-      return
-    }
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters")
-      return
-    }
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      navigation.replace("Home")
-    }, 1500)
   }
 
-  const handleContinue = async () => {
-    if (!phoneNumber || !country) {
-      alert("Please enter your phone number")
-      return
+  const handleGoogleSignIn = () => {
+    if (
+      firstName.trim() &&
+      lastName.trim() &&
+      googleEmail.trim() &&
+      googlePassword.trim() &&
+      googleConfirmPassword.trim()
+    ) {
+      if (googlePassword !== googleConfirmPassword) {
+        Alert.alert("Error", "Passwords do not match")
+        return
+      }
+      console.log("Signing in with Google:", { firstName, lastName, googleEmail, googlePassword })
+      navigation.navigate("Login")
+    } else {
+      Alert.alert("Error", "Please fill in all fields")
     }
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-      navigation.replace("Home")
-    }, 1500)
+  }
+
+  const toggleAuthMode = (mode: AuthMode) => {
+    setAuthMode(mode)
+    if (mode === "google") {
+      setMobileNumber("")
+      setPhonePassword("")
+      setPhoneConfirmPassword("")
+    } else {
+      setGoogleEmail("")
+      setGooglePassword("")
+      setGoogleConfirmPassword("")
+    }
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="#333" />
-          </TouchableOpacity>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
           <Text style={styles.title}>Create an account</Text>
-        </View>
 
-        {/* Register Form */}
-        <View style={styles.formContainer}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Join our community of travelers</Text>
-
-          {/* Full Name Input */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Full Name</Text>
-            <View style={styles.inputContainer}>
-              <Ionicons name="person" size={20} color="#FF5A5F" />
+          <View style={styles.nameContainer}>
               <TextInput
-                style={styles.input}
-                placeholder="John Doe"
-                value={fullName}
-                onChangeText={setFullName}
-                placeholderTextColor="#999"
-              />
-            </View>
-          </View>
-
-          {/* Email Input */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Email Address</Text>
-            <View style={styles.inputContainer}>
-              <Ionicons name="mail" size={20} color="#FF5A5F" />
-              <TextInput
-                style={styles.input}
-                placeholder="you@example.com"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholderTextColor="#999"
-              />
-            </View>
-          </View>
-
-          {/* Password Input */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Password</Text>
-            <View style={styles.inputContainer}>
-              <Ionicons name="lock-closed" size={20} color="#FF5A5F" />
-              <TextInput
-                style={styles.input}
-                placeholder="••••••••"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                placeholderTextColor="#999"
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#999" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Confirm Password Input */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>Confirm Password</Text>
-            <View style={styles.inputContainer}>
-              <Ionicons name="lock-closed" size={20} color="#FF5A5F" />
-              <TextInput
-                style={styles.input}
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={!showPassword}
-                placeholderTextColor="#999"
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Ionicons name={showPassword ? "eye" : "eye-off"} size={20} color="#999" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Password Requirements */}
-          <View style={styles.requirementBox}>
-            <View style={styles.requirementItem}>
-              <Ionicons
-                name={password.length >= 6 ? "checkmark-circle" : "ellipse"}
-                size={16}
-                color={password.length >= 6 ? "#4CAF50" : "#ddd"}
-              />
-              <Text style={styles.requirementText}>At least 6 characters</Text>
-            </View>
-          </View>
-
-          {/* Phone Input Section */}
-          <Text style={styles.inputLabel}>Enter your mobile number:</Text>
-
-          <View style={styles.phoneInputRow}>
-            <View style={styles.countrySelector}>
-              <Text style={styles.countryCode}>🇺🇸</Text>
-              <Ionicons name="chevron-down" size={18} color="#333" />
-            </View>
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholderTextColor="#bbb"
+            />
             <TextInput
-              style={styles.phoneInput}
-              placeholder="+1 Mobile number"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              keyboardType="phone-pad"
-              placeholderTextColor="#ccc"
+              style={styles.input}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              placeholderTextColor="#bbb"
             />
           </View>
+          
 
-          {/* Continue Button */}
-          <TouchableOpacity
-            style={[styles.continueButton, isLoading && styles.buttonDisabled]}
-            onPress={handleContinue}
-            disabled={isLoading}
-          >
-            <Text style={styles.continueButtonText}>{isLoading ? "..." : "Continue"}</Text>
-          </TouchableOpacity>
+          {authMode === "phone" ? (
+            <>
+              {/* Phone Number Section */}
+              <Text style={styles.label}>Enter your mobile number:</Text>
 
-          {/* Divider */}
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
-            <View style={styles.dividerLine} />
-          </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Mobile number"
+                value={mobileNumber}
+                onChangeText={setMobileNumber}
+                keyboardType="phone-pad"
+                placeholderTextColor="#bbb"
+              />
 
-          {/* Social Login */}
-          <View style={styles.socialContainer}>
-            <TouchableOpacity style={styles.socialButton}>
-              <Ionicons name="logo-apple" size={20} color="#000" />
-              <Text style={styles.socialButtonText}>Continue with Apple</Text>
-            </TouchableOpacity>
+              {/* Password Input Field */}
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={phonePassword}
+                onChangeText={setPhonePassword}
+                secureTextEntry
+                placeholderTextColor="#bbb"
+              />
 
-            <TouchableOpacity style={styles.socialButton}>
-              <Ionicons name="logo-facebook" size={20} color="#1877F2" />
-              <Text style={[styles.socialButtonText, { color: "#1877F2" }]}>Continue with Facebook</Text>
-            </TouchableOpacity>
+              {/* Confirm Password Input Field */}
+              <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                value={phoneConfirmPassword}
+                onChangeText={setPhoneConfirmPassword}
+                secureTextEntry
+                placeholderTextColor="#bbb"
+              />
 
-            <TouchableOpacity style={styles.socialButton}>
-              <Ionicons name="logo-google" size={20} color="#EA4335" />
-              <Text style={[styles.socialButtonText, { color: "#EA4335" }]}>Continue with Google</Text>
-            </TouchableOpacity>
-          </View>
+              {/* Continue Button */}
+              <TouchableOpacity style={styles.continueButton} onPress={handlePhoneContinue}>
+                <Text style={styles.continueButtonText}>Continue</Text>
+              </TouchableOpacity>
 
-          {/* Terms Checkbox */}
-          <TouchableOpacity style={styles.termsCheckbox} onPress={() => setAgreeTerms(!agreeTerms)}>
-            <View style={[styles.checkbox, agreeTerms && styles.checkboxChecked]}>
-              {agreeTerms && <Ionicons name="checkmark" size={14} color="#fff" />}
-            </View>
-            <Text style={styles.termsText}>
-              I agree to the <Text style={styles.termsLink}>Terms & Conditions</Text>
-            </Text>
-          </TouchableOpacity>
+              {/* Divider */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>or</Text>
+                <View style={styles.dividerLine} />
+              </View>
 
-          {/* Terms */}
+              {/* Google Login Button */}
+              <TouchableOpacity
+                style={[styles.socialButton, styles.googleButton]}
+                onPress={() => toggleAuthMode("google")}
+              >
+                <Text style={styles.googleIcon}>G</Text>
+                <Text style={styles.googleButtonText}>Continue with Google</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              {/* Google Login Section */}
+              <View style={styles.googleSection}>
+                <Text style={styles.googleSectionTitle}>Sign in with Google</Text>
+
+                {/* Email Input Field */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={googleEmail}
+                  onChangeText={setGoogleEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor="#bbb"
+                />
+
+                {/* Password Input Field */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  value={googlePassword}
+                  onChangeText={setGooglePassword}
+                  secureTextEntry
+                  placeholderTextColor="#bbb"
+                />
+
+                {/* Confirm Password Input Field */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm Password"
+                  value={googleConfirmPassword}
+                  onChangeText={setGoogleConfirmPassword}
+                  secureTextEntry
+                  placeholderTextColor="#bbb"
+                />
+
+                {/* Sign In Button */}
+                <TouchableOpacity style={styles.continueButton} onPress={handleGoogleSignIn}>
+                  <Text style={styles.continueButtonText}>Sign In</Text>
+                </TouchableOpacity>
+
+                {/* Divider */}
+                <View style={styles.dividerContainer}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                {/* Back to Phone Button */}
+                <TouchableOpacity
+                  style={[styles.socialButton, styles.phoneBackButton]}
+                  onPress={() => toggleAuthMode("phone")}
+                >
+                  <Text style={styles.phoneBackButtonText}>Sign in with phone number</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          {/* Terms and Conditions */}
           <Text style={styles.termsText}>
-            By signing up, you agree to our <Text style={styles.termsLink}>Terms of Service</Text> and{" "}
-            <Text style={styles.termsLink}>Privacy Policy</Text>.
+            By signing up, you agree to our <Text style={styles.linkText}>Terms of Service</Text> and{" "}
+            <Text style={styles.linkText}>Privacy Policy</Text>.
           </Text>
 
-          {/* Register Button */}
-          <TouchableOpacity
-            style={[styles.registerButton, isLoading && styles.registerButtonLoading]}
-            onPress={handleRegister}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
-            ) : (
-              <Text style={styles.registerButtonText}>Create Account</Text>
-            )}
-          </TouchableOpacity>
+          {/* Login Link */}
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginText}>Already had an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.loginLink}>Log in</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
-
-      {/* Sign In Link */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Already have an account?{" "}
-          <Text style={styles.signInLink} onPress={() => navigation.navigate("Login")}>
-            Sign In
-          </Text>
-        </Text>
-      </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#fff",
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 30,
+  nameContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
+    gap: 10,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 30,
+    paddingBottom: 50,
   },
   title: {
     fontSize: 28,
-    fontWeight: "700",
-    color: "#333",
-  },
-  formContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#333",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#999",
-    marginBottom: 24,
-  },
-  formGroup: {
-    marginBottom: 16,
+    fontWeight: "bold",
+    marginBottom: 30,
+    color: "#1a1a1a",
   },
   label: {
-    fontSize: 13,
-    fontWeight: "500",
-    color: "#333",
-    marginBottom: 8,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "#f9f9f9",
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 12,
-    marginHorizontal: 8,
-    fontSize: 14,
-    color: "#333",
-  },
-  requirementBox: {
-    backgroundColor: "#f9f9f9",
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderRadius: 6,
-    marginBottom: 16,
-  },
-  requirementItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  requirementText: {
-    fontSize: 12,
-    color: "#666",
-  },
-  termsCheckbox: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 8,
-    marginBottom: 20,
-  },
-  checkbox: {
-    width: 18,
-    height: 18,
-    borderWidth: 2,
-    borderColor: "#e0e0e0",
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 2,
-  },
-  checkboxChecked: {
-    backgroundColor: "#FF5A5F",
-    borderColor: "#FF5A5F",
-  },
-  termsText: {
-    flex: 1,
-    fontSize: 12,
-    color: "#666",
-    lineHeight: 16,
-  },
-  termsLink: {
-    color: "#FF5A5F",
-    fontWeight: "600",
-  },
-  registerButton: {
-    backgroundColor: "#FF5A5F",
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  registerButtonLoading: {
-    opacity: 0.7,
-  },
-  registerButtonText: {
-    color: "#fff",
     fontSize: 16,
-    fontWeight: "600",
+    color: "#555",
+    marginBottom: 15,
+    fontWeight: "500",
   },
-  footer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#f0f0f0",
-    alignItems: "center",
-  },
-  footerText: {
-    fontSize: 14,
-    color: "#666",
-  },
-  signInLink: {
-    color: "#FF5A5F",
-    fontWeight: "600",
-  },
-  inputLabel: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 16,
-  },
-  phoneInputRow: {
+  phoneInputContainer: {
     flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
-    gap: 12,
+    gap: 10,
   },
   countrySelector: {
-    width: 80,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f9f9f9",
-    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  flag: {
+    width: 24,
+    height: 16,
+    marginRight: 8,
   },
   countryCode: {
     fontSize: 16,
+    color: "#333",
+    fontWeight: "500",
   },
   phoneInput: {
     flex: 1,
+    height: 50,
+    borderColor: "#ddd",
     borderWidth: 1,
-    borderColor: "#e0e0e0",
     borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 14,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    backgroundColor: "#f5f5f5",
     color: "#333",
-    backgroundColor: "#f9f9f9",
+  },
+  input: {
+    height: 50,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    fontSize: 16,
+    backgroundColor: "#f5f5f5",
+    color: "#333",
+  },
+  googleSection: {
+    marginBottom: 20,
+  },
+  googleSectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 20,
+    color: "#1a1a1a",
   },
   continueButton: {
-    backgroundColor: "#00BFB3",
+    backgroundColor: "#00BCD4",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
-    marginBottom: 20,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
+    marginBottom: 15,
+    marginTop: 10,
   },
   continueButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
-  divider: {
+  dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
-    gap: 12,
+    marginVertical: 20,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#ddd",
   },
   dividerText: {
-    fontSize: 14,
+    marginHorizontal: 10,
     color: "#999",
-  },
-  socialContainer: {
-    gap: 12,
-    marginBottom: 20,
+    fontSize: 14,
   },
   socialButton: {
     flexDirection: "row",
-    alignItems: "center",
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
+    paddingHorizontal: 15,
     borderRadius: 8,
-    gap: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "#ddd",
   },
-  socialButtonText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#333",
+  googleButton: {
+    borderColor: "#ddd",
+  },
+  googleIcon: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginRight: 10,
+    color: "#EA4335",
+  },
+  googleButtonText: {
+    color: "#EA4335",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  phoneBackButton: {
+    borderColor: "#00BCD4",
+  },
+  phoneBackButtonText: {
+    color: "#00BCD4",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  termsText: {
+    textAlign: "center",
+    color: "#777",
+    fontSize: 13,
+    marginTop: 20,
+    lineHeight: 20,
+  },
+  linkText: {
+    color: "#00BCD4",
+    fontWeight: "600",
+  },
+  loginContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 30,
+    alignItems: "center",
+  },
+  loginText: {
+    fontSize: 15,
+    color: "#666",
+  },
+  loginLink: {
+    fontSize: 15,
+    color: "#00BCD4",
+    fontWeight: "600",
+    marginLeft: 5,
   },
 })
 

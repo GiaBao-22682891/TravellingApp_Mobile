@@ -5,12 +5,15 @@
     { "facilityId": 3, "name": "Gym", "category": "Fitness" },
     { "facilityId": 4, "name": "Air Conditioning", "category": "Comfort" },
     { "facilityId": 5, "name": "Breakfast Included", "category": "Dining" },
-    { "facilityId": 6, "name": "Parking", "category": "Convenience" }
+    { "facilityId": 6, "name": "Parking", "category": "Convenience" },
+    { "facilityId": 7, "name": "Spa", "category": "Wellness" },
+    { "facilityId": 8, "name": "Pet Friendly", "category": "Special" }
   ],
+
   "users": [
     {
       "userId": 1,
-      "mobileNumber": "+84901234567",
+      "mobileNumber": "0901234567",
       "email": "alice@example.com",
       "password": "hashed_password_1",
       "firstName": "Alice",
@@ -19,7 +22,7 @@
     },
     {
       "userId": 2,
-      "mobileNumber": "+84909876543",
+      "mobileNumber": "0909876543",
       "email": "bob@example.com",
       "password": "hashed_password_2",
       "firstName": "Bob",
@@ -28,14 +31,33 @@
     },
     {
       "userId": 3,
-      "mobileNumber": "+84905556677",
+      "mobileNumber": "0905556677",
       "email": "carol@example.com",
       "password": "hashed_password_3",
       "firstName": "Carol",
       "lastName": "Pham",
       "profileImage": "https://randomuser.me/api/portraits/women/3.jpg"
+    },
+    {
+      "userId": 4,
+      "mobileNumber": "0912223344",
+      "email": "david@example.com",
+      "password": "hashed_password_4",
+      "firstName": "David",
+      "lastName": "Le",
+      "profileImage": "https://randomuser.me/api/portraits/men/4.jpg"
+    },
+    {
+      "userId": 5,
+      "mobileNumber": "0933332222",
+      "email": "emily@example.com",
+      "password": "hashed_password_5",
+      "firstName": "Emily",
+      "lastName": "Vo",
+      "profileImage": "https://randomuser.me/api/portraits/women/5.jpg"
     }
   ],
+
   "accommodations": [
     {
       "accomodationId": 1,
@@ -44,9 +66,9 @@
       "location": "Nha Trang, Vietnam",
       "price": 250,
       "rating": 4.8,
-      "typeOfPlace": "Resort",
+      "typeOfPlace": "Beach",
       "numberOfGuest": 4,
-      "image": "https://source.unsplash.com/800x600/?resort,beach",
+      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
       "facilityIds": [1, 2, 4, 5]
     },
     {
@@ -56,9 +78,9 @@
       "location": "Ho Chi Minh City, Vietnam",
       "price": 90,
       "rating": 4.5,
-      "typeOfPlace": "Apartment",
+      "typeOfPlace": "Mountain",
       "numberOfGuest": 2,
-      "image": "https://source.unsplash.com/800x600/?apartment,city",
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
       "facilityIds": [1, 4, 6]
     },
     {
@@ -68,44 +90,97 @@
       "location": "Da Lat, Vietnam",
       "price": 180,
       "rating": 4.7,
-      "typeOfPlace": "Villa",
+      "typeOfPlace": "Mountain",
       "numberOfGuest": 6,
-      "image": "https://source.unsplash.com/800x600/?villa,mountain",
+      "image": "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
       "facilityIds": [1, 3, 4, 6]
+    },
+    {
+      "accomodationId": 4,
+      "title": "Miama Villa",
+      "description": "Miama surrounded by mountains, perfect for family retreats.",
+      "location": "Da Lat, Vietnam",
+      "price": 180,
+      "rating": 4.7,
+      "typeOfPlace": "Mountain",
+      "numberOfGuest": 6,
+      "image": "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+      "facilityIds": [1, 3, 4, 6]
+    },
+    {
+      "accomodationId": 5,
+      "title": "Riverside Bungalow",
+      "description": "Charming bungalow right by the river, ideal for couples.",
+      "location": "Hoi An, Vietnam",
+      "price": 120,
+      "rating": 4.6,
+      "typeOfPlace": "Camping",
+      "numberOfGuest": 2,
+      "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+      "facilityIds": [1, 5, 6, 8]
+    },
+    {
+      "accomodationId": 6,
+      "title": "Urban Boutique Hotel",
+      "description": "Trendy hotel with rooftop bar and city view rooms.",
+      "location": "Hanoi, Vietnam",
+      "price": 200,
+      "rating": 4.9,
+      "typeOfPlace": "Camping",
+      "numberOfGuest": 3,
+      "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+      "facilityIds": [1, 2, 4, 7]
     }
   ],
+
   "bookings": [
     {
       "bookingId": 1,
       "userId": 1,
-      "accommodationId": 2,
-      "checkIn": "2025-11-10",
-      "checkOut": "2025-11-12",
-      "nights": 2,
-      "totalPrice": 180,
-      "status": "upcoming"
+      "accomodationId": 2,
+      "bookingDate": "2025-11-12",
+      "bookingTime": "14:00",
+      "paymentMethod": "Credit Card",
+      "totalPrice": 180
     },
     {
       "bookingId": 2,
       "userId": 2,
-      "accommodationId": 1,
-      "checkIn": "2025-12-01",
-      "checkOut": "2025-12-05",
-      "nights": 4,
-      "totalPrice": 1000,
-      "status": "upcoming"
+      "accomodationId": 1,
+      "bookingDate": "2025-12-01",
+      "bookingTime": "10:30",
+      "paymentMethod": "Cash",
+      "totalPrice": 1000
     },
     {
       "bookingId": 3,
       "userId": 3,
-      "accommodationId": 3,
-      "checkIn": "2025-11-15",
-      "checkOut": "2025-11-18",
-      "nights": 3,
-      "totalPrice": 540,
-      "status": "completed"
+      "accomodationId": 3,
+      "bookingDate": "2025-11-15",
+      "bookingTime": "09:45",
+      "paymentMethod": "Credit Card",
+      "totalPrice": 540
+    },
+    {
+      "bookingId": 4,
+      "userId": 4,
+      "accomodationId": 5,
+      "bookingDate": "2025-11-20",
+      "bookingTime": "11:15",
+      "paymentMethod": "Cash",
+      "totalPrice": 300
+    },
+    {
+      "bookingId": 5,
+      "userId": 5,
+      "accomodationId": 6,
+      "bookingDate": "2025-12-22",
+      "bookingTime": "16:00",
+      "paymentMethod": "Credit Card",
+      "totalPrice": 600
     }
   ],
+
   "comments": [
     {
       "commentId": 1,
@@ -127,11 +202,28 @@
       "accommodationId": 3,
       "text": "Perfect for a peaceful weekend getaway.",
       "rating": 5
+    },
+    {
+      "commentId": 4,
+      "userId": 4,
+      "accommodationId": 5,
+      "text": "The riverside view was incredible, but breakfast could be improved.",
+      "rating": 4
+    },
+    {
+      "commentId": 5,
+      "userId": 5,
+      "accommodationId": 6,
+      "text": "The rooftop bar was amazing. Definitely coming back!",
+      "rating": 5
     }
   ],
+
   "favorites": [
-    { "favoriteId": 1, "userId": 1, "accommodationId": 3 },
-    { "favoriteId": 2, "userId": 2, "accommodationId": 1 },
-    { "favoriteId": 3, "userId": 3, "accommodationId": 2 }
+    { "favoriteId": 1, "userId": 1, "accomodationId": 3 },
+    { "favoriteId": 2, "userId": 2, "accomodationId": 1 },
+    { "favoriteId": 3, "userId": 3, "accomodationId": 2 },
+    { "favoriteId": 4, "userId": 4, "accomodationId": 6 },
+    { "favoriteId": 5, "userId": 5, "accomodationId": 5 }
   ]
 }

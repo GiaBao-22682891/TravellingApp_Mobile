@@ -1,258 +1,274 @@
-"use client"
-
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from "react-native"
-import Ionicons from "react-native-vector-icons/Ionicons"
-import { useEffect, useState } from "react"
-import { dataService, type User } from "../../services/DataService"
-
-interface MenuItem {
-  id: string
-  icon: string
-  label: string
-  value?: string
-}
+import { useState } from "react"
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, SafeAreaView, Alert } from "react-native"
+import { type NavigationProp, useNavigation } from "@react-navigation/native"
+import { useUser } from "../../context/UserContext"
+import type { RootStackParamList } from "../../type/type"
+import { Ionicons } from "@expo/vector-icons"
 
 const ProfileScreen = () => {
-  const [user, setUser] = useState<User | null>(null)
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+  const { currentUser, logout } = useUser()
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    // Simulating user ID 1 - in real app would come from auth
-    const userData = dataService.getUserById(1)
-    setUser(userData || null)
-  }, [])
-
-  if (!user) {
-    return <Text>Loading...</Text>
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading profile...</Text>
+        </View>
+      </SafeAreaView>
+    )
   }
 
-  const menuItems: MenuItem[] = [
-    { id: "1", icon: "person-outline", label: "Edit Profile" },
-    { id: "2", icon: "notifications-outline", label: "Notifications" },
-    { id: "3", icon: "heart-outline", label: "Saved Items", value: "24" },
-    { id: "4", icon: "card-outline", label: "Payment Methods" },
-    { id: "5", icon: "help-circle-outline", label: "Help & Support" },
-    { id: "6", icon: "settings-outline", label: "Settings" },
-  ]
+  if (!currentUser) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="person-circle-outline" size={80} color="#00BCD4" />
+          <Text style={styles.emptyText}>No user logged in</Text>
+          <Text style={styles.emptySubText}>Please login to view your profile</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", onPress: () => {} },
+      {
+        text: "Logout",
+        onPress: () => {
+          logout()
+          Alert.alert("Success", "You have been logged out")
+          navigation.navigate("Login")
+        },
+        style: "destructive",
+      },
+    ])
+  }
+
+  const handleEditProfile = () => {
+    Alert.alert("Edit Profile", "Edit profile feature coming soon!")
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Profile Header */}
-      <View style={styles.profileHeader}>
-        <View style={styles.avatarContainer}>
-          {user.avatar ? (
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
-          ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Ionicons name="person" size={40} color="#fff" />
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
+          {/* Profile Header */}
+          <View style={styles.headerSection}>
+            <Image
+              source={{ uri: currentUser.profileImage }}
+              style={styles.profileImage}
+              defaultSource={require("../../../assets/icon.png")}
+            />
+            <Text style={styles.userName}>
+              {currentUser.firstName} {currentUser.lastName}
+            </Text>
+            <Text style={styles.userType}>Traveler</Text>
+          </View>
+
+          {/* Profile Information Cards */}
+          <View style={styles.infoSection}>
+            {/* Email Card */}
+            <View style={styles.infoCard}>
+              <View style={styles.infoIconContainer}>
+                <Ionicons name="mail-outline" size={24} color="#00BCD4" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Email</Text>
+                <Text style={styles.infoValue}>{currentUser.email}</Text>
+              </View>
             </View>
-          )}
+
+            {/* Phone Card */}
+            <View style={styles.infoCard}>
+              <View style={styles.infoIconContainer}>
+                <Ionicons name="call-outline" size={24} color="#00BCD4" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Phone</Text>
+                <Text style={styles.infoValue}>{currentUser.mobileNumber}</Text>
+              </View>
+            </View>
+
+            {/* Name Card */}
+            <View style={styles.infoCard}>
+              <View style={styles.infoIconContainer}>
+                <Ionicons name="person-outline" size={24} color="#00BCD4" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Full Name</Text>
+                <Text style={styles.infoValue}>
+                  {currentUser.firstName} {currentUser.lastName}
+                </Text>
+              </View>
+            </View>
+
+            {/* User ID Card */}
+            <View style={styles.infoCard}>
+              <View style={styles.infoIconContainer}>
+                <Ionicons name="id-card-outline" size={24} color="#00BCD4" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>User ID</Text>
+                <Text style={styles.infoValue}>#{currentUser.userId}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionSection}>
+            <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+              <Ionicons name="pencil-outline" size={20} color="#fff" />
+              <Text style={styles.editButtonText}>Edit Profile</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={20} color="#fff" />
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <Text style={styles.userName}>{user.name}</Text>
-        <Text style={styles.userEmail}>{user.email}</Text>
-
-        {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{user.totalBookings}</Text>
-            <Text style={styles.statLabel}>Bookings</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>${user.totalSpent}</Text>
-            <Text style={styles.statLabel}>Spent</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Contact Info */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Contact Information</Text>
-        <View style={styles.infoBox}>
-          <View style={styles.infoItem}>
-            <Ionicons name="call-outline" size={18} color="#FF5A5F" />
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Phone</Text>
-              <Text style={styles.infoValue}>{user.phone}</Text>
-            </View>
-          </View>
-          <View style={styles.infoItem}>
-            <Ionicons name="location-outline" size={18} color="#FF5A5F" />
-            <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Location</Text>
-              <Text style={styles.infoValue}>{user.location}</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-      {/* Menu Items */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account Settings</Text>
-        {menuItems.map((item, index) => (
-          <TouchableOpacity key={item.id} style={styles.menuItem}>
-            <View style={styles.menuLeft}>
-              <Ionicons name={item.icon as any} size={20} color="#FF5A5F" />
-              <Text style={styles.menuLabel}>{item.label}</Text>
-            </View>
-            <View style={styles.menuRight}>
-              {item.value && <Text style={styles.menuValue}>{item.value}</Text>}
-              <Ionicons name="chevron-forward" size={18} color="#ccc" />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Logout Button */}
-      <View style={styles.section}>
-        <TouchableOpacity style={styles.logoutBtn}>
-          <Ionicons name="log-out-outline" size={18} color="#FF5A5F" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: "#fff",
   },
-  profileHeader: {
-    alignItems: "center",
-    paddingVertical: 30,
-    backgroundColor: "#f9f9f9",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+  scrollContent: {
+    flexGrow: 1,
   },
-  avatarContainer: {
-    marginBottom: 16,
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  avatarPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#FF5A5F",
+  loadingContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    marginTop: 20,
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: "#999",
+    marginTop: 8,
+  },
+  headerSection: {
+    alignItems: "center",
+    marginBottom: 30,
+    paddingTop: 10,
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 4,
+    borderColor: "#00BCD4",
+    backgroundColor: "#f0f0f0",
   },
   userName: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 4,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#1a1a1a",
+    marginTop: 15,
   },
-  userEmail: {
+  userType: {
     fontSize: 14,
-    color: "#666",
-    marginBottom: 20,
+    color: "#00BCD4",
+    marginTop: 5,
+    fontWeight: "500",
   },
-  statsContainer: {
+  infoSection: {
+    marginBottom: 30,
+    gap: 12,
+  },
+  infoCard: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 20,
-  },
-  statBox: {
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#FF5A5F",
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 4,
-  },
-  statDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: "#e0e0e0",
-  },
-  section: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 12,
-  },
-  infoBox: {
     backgroundColor: "#f9f9f9",
     borderRadius: 12,
-    padding: 12,
-    gap: 12,
-  },
-  infoItem: {
-    flexDirection: "row",
+    padding: 16,
     alignItems: "flex-start",
-    gap: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: "#00BCD4",
+  },
+  infoIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#e0f7fa",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
   },
   infoContent: {
     flex: 1,
+    justifyContent: "center",
   },
   infoLabel: {
     fontSize: 12,
     color: "#999",
+    fontWeight: "500",
+    marginBottom: 4,
   },
   infoValue: {
-    fontSize: 14,
+    fontSize: 16,
+    color: "#1a1a1a",
     fontWeight: "600",
-    color: "#000",
-    marginTop: 2,
   },
-  menuItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 14,
-    paddingHorizontal: 0,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
-  },
-  menuLeft: {
-    flexDirection: "row",
-    alignItems: "center",
+  actionSection: {
     gap: 12,
+    paddingBottom: 30,
   },
-  menuLabel: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#000",
-  },
-  menuRight: {
+  editButton: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  menuValue: {
-    fontSize: 12,
-    color: "#FF5A5F",
-    fontWeight: "600",
-  },
-  logoutBtn: {
-    flexDirection: "row",
+    backgroundColor: "#00BCD4",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
-    marginHorizontal: 0,
-    backgroundColor: "#FFF5F5",
-    borderRadius: 8,
-    gap: 8,
+    gap: 10,
   },
-  logoutText: {
-    fontSize: 14,
+  editButtonText: {
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
-    color: "#FF5A5F",
+  },
+  logoutButton: {
+    flexDirection: "row",
+    backgroundColor: "#FF6B6B",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  logoutButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 })
 

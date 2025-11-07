@@ -1,116 +1,122 @@
 "use client"
 
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native"
-import Ionicons from "react-native-vector-icons/Ionicons"
-import { useEffect, useState } from "react"
-import { dataService } from "../../services/DataService"
+import { useState } from "react"
+import { View, Text, Image, StyleSheet, FlatList } from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
+import { Ionicons } from "@expo/vector-icons"
+import { useUser } from "../../context/UserContext"
+import data from "../../../data/data.json"
+import type { Booking, Accommodation } from "../../type/type"
+
+interface BookingWithAccommodation extends Booking {
+  accommodation?: Accommodation
+}
 
 const BookingScreen = () => {
-  const [bookings, setBookings] = useState<any[]>([])
+  const { currentUser } = useUser()
+  const [bookings, setBookings] = useState<BookingWithAccommodation[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    // Simulating user ID 1 - in real app would come from auth
-    const data = dataService.getBookingsByUser(1)
-    setBookings(data)
-  }, [])
+  useFocusEffect(() => {
+    if (currentUser?.userId) {
+      const userBookings = data.bookings.filter((booking) => booking.userId === currentUser.userId)
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "upcoming":
-        return "#FF5A5F"
-      case "completed":
-        return "#4CAF50"
-      case "cancelled":
-        return "#999"
-      default:
-        return "#666"
+      // Merge accommodation data with bookings
+      const bookingsWithAccommodation = userBookings.map((booking) => {
+        const accommodation = data.accommodations.find((acc) => acc.accomodationId === booking.accomodationId)
+        return { ...booking, accommodation }
+      })
+
+      setBookings(bookingsWithAccommodation)
+      setIsLoading(false)
     }
+  })
+
+  if (!currentUser) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="alert-circle" size={48} color="#ccc" />
+          <Text style={styles.emptyText}>Please login to view bookings</Text>
+        </View>
+      </View>
+    )
   }
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "upcoming":
-        return "Upcoming"
-      case "completed":
-        return "Completed"
-      case "cancelled":
-        return "Cancelled"
-      default:
-        return "Unknown"
-    }
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Loading...</Text>
+        </View>
+      </View>
+    )
   }
 
-  const upcomingBookings = bookings.filter((b) => b.status === "upcoming")
-  const completedBookings = bookings.filter((b) => b.status === "completed")
-
-  const BookingCard = ({ booking }: { booking: any }) => (
-    <View style={styles.bookingCard}>
-      <View style={styles.cardTop}>
-        <View>
-          <Text style={styles.bookingTitle}>{"Accommodation " + booking.accommodationId}</Text>
-          <Text style={styles.bookingLocation}>
-            <Ionicons name="location" size={12} color="#666" /> Check-in: {booking.checkIn}
-          </Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(booking.status) + "20" }]}>
-          <Text style={[styles.statusText, { color: getStatusColor(booking.status) }]}>
-            {getStatusText(booking.status)}
-          </Text>
+  if (bookings.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="calendar-outline" size={48} color="#ccc" />
+          <Text style={styles.emptyText}>No bookings yet</Text>
         </View>
       </View>
-
-      <View style={styles.dateContainer}>
-        <View style={styles.dateBox}>
-          <Text style={styles.dateLabel}>Check-in</Text>
-          <Text style={styles.dateText}>{booking.checkIn}</Text>
-        </View>
-        <Ionicons name="arrow-forward" size={20} color="#ccc" />
-        <View style={styles.dateBox}>
-          <Text style={styles.dateLabel}>Check-out</Text>
-          <Text style={styles.dateText}>{booking.checkOut}</Text>
-        </View>
-      </View>
-
-      <View style={styles.priceContainer}>
-        <View>
-          <Text style={styles.nightsText}>{booking.nights} nights</Text>
-          <Text style={styles.totalPrice}>${booking.totalPrice}</Text>
-        </View>
-        <TouchableOpacity style={styles.detailsBtn}>
-          <Text style={styles.detailsBtnText}>View Details</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
+    )
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Bookings</Text>
-        <Text style={styles.headerSubtitle}>{bookings.length} total bookings</Text>
       </View>
 
-      {/* Upcoming Bookings */}
-      {upcomingBookings.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Upcoming</Text>
-          {upcomingBookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
-          ))}
-        </View>
-      )}
+      <FlatList
+        data={bookings}
+        keyExtractor={(item) => item.bookingId.toString()}
+        renderItem={({ item }) => <BookingCard booking={item} accommodation={item.accommodation} />}
+        scrollEnabled={false}
+        contentContainerStyle={styles.listContainer}
+      />
+    </View>
+  )
+}
 
-      {/* Completed Bookings */}
-      {completedBookings.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Completed</Text>
-          {completedBookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
-          ))}
+interface BookingCardProps {
+  booking: Booking
+  accommodation?: Accommodation
+}
+
+const BookingCard = ({ booking, accommodation }: BookingCardProps) => {
+  if (!accommodation) return null
+
+  return (
+    <View style={styles.bookingCard}>
+      <Image source={{ uri: accommodation.image }} style={styles.bookingImage} />
+
+      <View style={styles.bookingContent}>
+        <Text style={styles.bookingTitle}>{accommodation.title}</Text>
+        <Text style={styles.bookingLocation}>{accommodation.location}</Text>
+
+        <View style={styles.bookingDetails}>
+          <View style={styles.detailItem}>
+            <Ionicons name="calendar-outline" size={16} color="#00BCD4" />
+            <Text style={styles.detailText}>{booking.bookingDate}</Text>
+          </View>
+
+          <View style={styles.detailItem}>
+            <Ionicons name="time-outline" size={16} color="#00BCD4" />
+            <Text style={styles.detailText}>{booking.bookingTime}</Text>
+          </View>
         </View>
-      )}
-    </ScrollView>
+
+        <View style={styles.bookingFooter}>
+          <Text style={styles.bookingPrice}>${booking.totalPrice}</Text>
+          <View style={styles.paymentBadge}>
+            <Text style={styles.paymentText}>{booking.paymentMethod}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
   )
 }
 
@@ -120,109 +126,93 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "700",
-    color: "#000",
+    color: "#1a1a1a",
   },
-  headerSubtitle: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-  },
-  section: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#000",
-    marginBottom: 12,
+  listContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   bookingCard: {
-    backgroundColor: "#f9f9f9",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: "#FF5A5F",
-  },
-  cardTop: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    backgroundColor: "#fafafa",
+    borderRadius: 12,
+    overflow: "hidden",
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
+  },
+  bookingImage: {
+    width: 100,
+    height: 100,
+  },
+  bookingContent: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    justifyContent: "space-between",
   },
   bookingTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#000",
+    color: "#1a1a1a",
+    marginBottom: 4,
   },
   bookingLocation: {
     fontSize: 12,
-    color: "#666",
-    marginTop: 4,
+    color: "#999",
+    marginBottom: 8,
   },
-  statusBadge: {
+  bookingDetails: {
+    gap: 6,
+    marginBottom: 8,
+  },
+  detailItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  detailText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  bookingFooter: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  bookingPrice: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#00BCD4",
+  },
+  paymentBadge: {
+    backgroundColor: "#e8f4f8",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
   },
-  statusText: {
+  paymentText: {
     fontSize: 11,
     fontWeight: "600",
+    color: "#00BCD4",
   },
-  dateContainer: {
-    flexDirection: "row",
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 12,
     gap: 12,
   },
-  dateBox: {
-    flex: 1,
-  },
-  dateLabel: {
-    fontSize: 11,
+  emptyText: {
+    fontSize: 16,
     color: "#999",
-    marginBottom: 2,
-  },
-  dateText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#000",
-  },
-  priceContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
-  },
-  nightsText: {
-    fontSize: 12,
-    color: "#666",
-  },
-  totalPrice: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#FF5A5F",
-    marginTop: 2,
-  },
-  detailsBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: "#FF5A5F",
-    borderRadius: 6,
-  },
-  detailsBtnText: {
-    fontSize: 12,
-    color: "#fff",
-    fontWeight: "600",
   },
 })
 
