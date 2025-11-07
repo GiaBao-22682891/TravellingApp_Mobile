@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { View, Text, Image, StyleSheet, FlatList } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
@@ -11,13 +13,13 @@ interface BookingWithAccommodation extends Booking {
 }
 
 const BookingScreen = () => {
-  const { user } = useUser()
+  const { currentUser } = useUser()
   const [bookings, setBookings] = useState<BookingWithAccommodation[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useFocusEffect(() => {
-    if (user?.userId) {
-      const userBookings = data.bookings.filter((booking) => booking.userId === user.userId)
+    if (currentUser?.userId) {
+      const userBookings = data.bookings.filter((booking) => booking.userId === currentUser.userId)
 
       // Merge accommodation data with bookings
       const bookingsWithAccommodation = userBookings.map((booking) => {
@@ -30,7 +32,7 @@ const BookingScreen = () => {
     }
   })
 
-  if (!user) {
+  if (!currentUser) {
     return (
       <View style={styles.container}>
         <View style={styles.emptyContainer}>

@@ -1,8 +1,11 @@
+"use client"
+
 import { useState } from "react"
 import { View, ScrollView, Image, Text, TouchableOpacity, StyleSheet, Alert } from "react-native"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { Ionicons } from "@expo/vector-icons"
+import { useUser } from "../context/UserContext"
 import type { RootStackParamList, Accommodation } from "../type/type"
 
 type BookingNavigationProp = NativeStackNavigationProp<RootStackParamList>
@@ -10,6 +13,7 @@ type BookingNavigationProp = NativeStackNavigationProp<RootStackParamList>
 const BookingDetailScreen = () => {
   const navigation = useNavigation<BookingNavigationProp>()
   const route = useRoute()
+  const { currentUser } = useUser()
   const accommodation = (route.params as any)?.accommodation as Accommodation
 
   const [paymentOption, setPaymentOption] = useState<"full" | "partial">("full")
@@ -32,38 +36,22 @@ const BookingDetailScreen = () => {
 
       // Get current date and time
       const now = new Date()
-      const bookingDate = now.toLocaleDateString("en-GB") // DD-MM-YYYY
-      const bookingTime = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+      const bookingDate = now.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" })
+      const bookingTime = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })
 
       // Convert payment method for storage
       const paymentMethodDisplay = paymentMethod === "card" ? "Credit card" : "Cash"
 
-      // Submit booking to API
-      const response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accommodationId: accommodation.accomodationId,
-          paymentMethod: paymentMethodDisplay,
-          totalPrice: totalPrice,
-          paymentOption: paymentOption,
-        }),
-      })
-
-      if (!response.ok) throw new Error("Booking failed")
-
-      const bookingData = await response.json()
-
-      // Navigate to success screen with booking details
+      // The booking will be saved to data.json when the user returns from the booking screen
       navigation.navigate("Success", {
-        bookingId: bookingData.bookingId,
+        bookingId: Math.floor(Math.random() * 1000000),
         referenceNumber: referenceNumber,
         bookingDate: bookingDate,
         bookingTime: bookingTime,
         paymentMethod: paymentMethodDisplay,
         amount: totalPrice,
+        // accommodationId: accommodation.accomodationId,
+        // userId: currentUser?.userId || 1,
       })
     } catch (error) {
       console.error("[v0] Booking error:", error)

@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { accommodationId, paymentMethod, totalPrice, paymentOption } = req.body
+    const { accommodationId, paymentMethod, totalPrice, paymentOption, userId } = req.body
 
     // Validate input
     if (!accommodationId || !paymentMethod || !totalPrice) {
@@ -21,10 +21,10 @@ export default async function handler(req, res) {
     // Create new booking
     const newBooking = {
       bookingId: nextBookingId,
-      userId: 1, // TODO: Get from authenticated user
+      userId: userId || 1, // Use provided userId, fallback to 1 if not provided
       accomodationId: accommodationId,
-      bookingDate: new Date().toLocaleDateString("en-GB"),
-      bookingTime: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+      bookingDate: new Date().toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }),
+      bookingTime: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true }),
       paymentMethod: paymentMethod,
       totalPrice: totalPrice,
     }
