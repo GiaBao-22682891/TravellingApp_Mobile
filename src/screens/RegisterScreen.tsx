@@ -87,14 +87,14 @@ const RegisterScreen = () => {
 
           <View style={styles.nameContainer}>
               <TextInput
-              style={styles.input}
+              style={[styles.input, {flex: 1}]}
               placeholder="First Name"
               value={firstName}
               onChangeText={setFirstName}
               placeholderTextColor="#bbb"
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, {flex: 1}]}
               placeholder="Last Name"
               value={lastName}
               onChangeText={setLastName}
@@ -162,7 +162,7 @@ const RegisterScreen = () => {
             <>
               {/* Google Login Section */}
               <View style={styles.googleSection}>
-                <Text style={styles.googleSectionTitle}>Sign in with Google</Text>
+                <Text style={styles.label}>Sign in with Google</Text>
 
                 {/* Email Input Field */}
                 <TextInput
@@ -243,7 +243,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   nameContainer: {
+    justifyContent: "space-between",
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
   },
   scrollContent: {
@@ -255,6 +257,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 50,
   },
+  
   title: {
     fontSize: 28,
     fontWeight: "bold",

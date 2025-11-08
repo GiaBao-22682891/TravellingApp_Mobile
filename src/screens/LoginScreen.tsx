@@ -133,7 +133,7 @@ const LoginScreen = () => {
             <>
               {/* Google Login Section */}
               <View style={styles.googleSection}>
-                <Text style={styles.googleSectionTitle}>Sign in with Google</Text>
+                <Text style={styles.label}>Sign in with Google</Text>
 
                 <TextInput
                   style={styles.input}

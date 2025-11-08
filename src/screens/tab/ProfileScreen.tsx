@@ -70,6 +70,19 @@ const ProfileScreen = () => {
 
           {/* Profile Information Cards */}
           <View style={styles.infoSection}>
+            {/* Name Card */}
+            <View style={styles.infoCard}>
+              <View style={styles.infoIconContainer}>
+                <Ionicons name="person-outline" size={24} color="#00BCD4" />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.infoLabel}>Full Name</Text>
+                <Text style={styles.infoValue}>
+                  {currentUser.firstName} {currentUser.lastName}
+                </Text>
+              </View>
+            </View>
+
             {/* Email Card */}
             <View style={styles.infoCard}>
               <View style={styles.infoIconContainer}>
@@ -92,29 +105,6 @@ const ProfileScreen = () => {
               </View>
             </View>
 
-            {/* Name Card */}
-            <View style={styles.infoCard}>
-              <View style={styles.infoIconContainer}>
-                <Ionicons name="person-outline" size={24} color="#00BCD4" />
-              </View>
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Full Name</Text>
-                <Text style={styles.infoValue}>
-                  {currentUser.firstName} {currentUser.lastName}
-                </Text>
-              </View>
-            </View>
-
-            {/* User ID Card */}
-            <View style={styles.infoCard}>
-              <View style={styles.infoIconContainer}>
-                <Ionicons name="id-card-outline" size={24} color="#00BCD4" />
-              </View>
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>User ID</Text>
-                <Text style={styles.infoValue}>#{currentUser.userId}</Text>
-              </View>
-            </View>
           </View>
 
           {/* Action Buttons */}

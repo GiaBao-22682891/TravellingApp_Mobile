@@ -66,7 +66,7 @@ const HomeScreen = () => {
           </View>
 
           {/* Category Tabs */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+          <View style={styles.categoriesScroll}>
             <View style={styles.categoriesContainer}>
               {categories.map((category) => (
                 <TouchableOpacity
@@ -87,7 +87,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               ))}
             </View>
-          </ScrollView>
+          </View>
         </View>
 
         {/* Accommodations List */}
@@ -133,6 +133,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   categoriesContainer: {
+    justifyContent: "center",
+    alignItems: "center",
     flexDirection: "row",
     gap: 24,
   },
