@@ -1,8 +1,9 @@
-"use client"
-
 import { useState } from "react"
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
+import { useUser } from "../context/UserContext"
+
+const API_URL = "http://localhost:3000"
 
 const ConfirmScreen = ({ navigation, route }: any) => {
   const [guestName, setGuestName] = useState("")
@@ -10,6 +11,7 @@ const ConfirmScreen = ({ navigation, route }: any) => {
   const [phone, setPhone] = useState("")
   const [specialRequests, setSpecialRequests] = useState("")
   const [agreeTerms, setAgreeTerms] = useState(false)
+  const {currentUser} = useUser()
 
   const accommodation = route?.params?.accommodation || {
     name: "Luxury Beach Villa",
@@ -17,13 +19,39 @@ const ConfirmScreen = ({ navigation, route }: any) => {
     nights: 3,
   }
 
-  const handleConfirmBooking = () => {
-    if (!guestName || !email || !phone || !agreeTerms) {
-      alert("Please fill all required fields and accept terms")
-      return
-    }
-    navigation.navigate("Success", { booking: { ...accommodation, guestName, email } })
+const handleConfirmBooking = async () => {
+  if (!currentUser) {
+    alert("You must be logged in to book")
+    return
   }
+
+  const newBooking = {
+    userId: currentUser.userId, // make sure you have user context
+    accomodationId: accommodation.accomodationId,
+    bookingDate: new Date().toLocaleDateString(),
+    bookingTime: new Date().toLocaleTimeString(),
+    paymentMethod: "Credit Card", // or whatever
+    totalPrice: accommodation.price * accommodation.nights,
+    guestName,
+    email,
+    phone,
+  }
+
+  try {
+    // Send booking to backend (json-server or real API)
+    await fetch("http://localhost:3000/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newBooking),
+    })
+
+    // Navigate to success screen and pass booking details
+    navigation.navigate("Success", { booking: newBooking })
+  } catch (err) {
+    console.error(err)
+    alert("Failed to create booking")
+  }
+}
 
   return (
     <View style={styles.container}>

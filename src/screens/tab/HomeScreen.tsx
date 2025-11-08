@@ -9,7 +9,7 @@ import type { Accommodation } from "../../type/type"
 
 const HomeScreen = () => {
   const { data: accommodationsData, loading, error } = useFetch<Accommodation[]>("/accommodations")
-  const [selectedCategory, setSelectedCategory] = useState<string>("Beach")
+  const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [searchText, setSearchText] = useState("")
 
 const filteredAccommodations = (accommodationsData || []).filter((item) => {

@@ -10,13 +10,7 @@ const SuccessScreen = () => {
   const navigation = useNavigation<SuccessNavigationProp>()
   const route = useRoute()
 
-  const bookingDetails = (route.params as any) || {
-    referenceNumber: "00000072697027",
-    bookingDate: "09-05-2023",
-    bookingTime: "05:40 AM",
-    paymentMethod: "Credit card",
-    amount: 30,
-  }
+  const bookingDetails = (route.params as any)?.booking || { }
 
   const handleViewBooking = () => {
     navigation.navigate("Tabs", {

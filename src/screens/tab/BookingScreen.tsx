@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, Text, Image, StyleSheet, FlatList } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 import { Ionicons } from "@expo/vector-icons"
@@ -17,20 +15,33 @@ const BookingScreen = () => {
   const [bookings, setBookings] = useState<BookingWithAccommodation[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useFocusEffect(() => {
-    if (currentUser?.userId) {
-      const userBookings = data.bookings.filter((booking) => booking.userId === currentUser.userId)
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!currentUser) return
 
-      // Merge accommodation data with bookings
-      const bookingsWithAccommodation = userBookings.map((booking) => {
-        const accommodation = data.accommodations.find((acc) => acc.accomodationId === booking.accomodationId)
-        return { ...booking, accommodation }
-      })
+      try {
+        const bookingsRes = await fetch("http://localhost:3000/bookings")
+        const bookingsData: Booking[] = await bookingsRes.json()
+        const accommodationsRes = await fetch("http://localhost:3000/accommodations")
+        const accommodationsData: Accommodation[] = await accommodationsRes.json()
 
-      setBookings(bookingsWithAccommodation)
-      setIsLoading(false)
+        // Filter user bookings and merge with accommodations
+        const userBookings = bookingsData.filter((b) => b.userId === currentUser.userId)
+        const merged = userBookings.map((b) => ({
+          ...b,
+          accommodation: accommodationsData.find((acc) => acc.accomodationId === b.accomodationId),
+        }))
+
+        setBookings(merged)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setIsLoading(false)
+      }
     }
-  })
+
+    fetchBookings()
+  }, [currentUser])
 
   if (!currentUser) {
     return (

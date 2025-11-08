@@ -59,7 +59,6 @@ const FavoriteScreen = () => {
           data={filteredAccommodations}
           keyExtractor={(item) => item.accomodationId.toString()}
           renderItem={({ item }) => <AccommodationCard accommodation={item} />}
-          scrollEnabled={false}
           contentContainerStyle={styles.listContent}
         />
       ) : (
