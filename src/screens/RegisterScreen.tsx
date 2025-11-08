@@ -14,6 +14,7 @@ import { useNavigation, type NavigationProp } from "@react-navigation/native"
 import type { RootStackParamList } from "../type/type"
 
 type AuthMode = "phone" | "google"
+const API_URL = "http://localhost:3000"
 
 const RegisterScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
@@ -28,43 +29,90 @@ const RegisterScreen = () => {
   const [googlePassword, setGooglePassword] = useState("")
   const [googleConfirmPassword, setGoogleConfirmPassword] = useState("")
 
-  const handlePhoneContinue = () => {
-    if (
-      firstName.trim() &&
-      lastName.trim() &&
-      mobileNumber.trim() &&
-      phonePassword.trim() &&
-      phoneConfirmPassword.trim()
-    ) {
-      if (phonePassword !== phoneConfirmPassword) {
-        Alert.alert("Error", "Passwords do not match")
-        return
-      }
-      console.log("Continuing with phone:", { firstName, lastName, mobileNumber, phonePassword })
-      navigation.navigate("Login")
-    } else {
-      Alert.alert("Error", "Please fill in all fields")
+  const handlePhoneContinue = async () => {
+  if (
+    firstName.trim() &&
+    lastName.trim() &&
+    mobileNumber.trim() &&
+    phonePassword.trim() &&
+    phoneConfirmPassword.trim()
+  ) {
+    if (phonePassword !== phoneConfirmPassword) {
+      Alert.alert("Error", "Passwords do not match")
+      return
     }
-  }
 
-  const handleGoogleSignIn = () => {
-    if (
-      firstName.trim() &&
-      lastName.trim() &&
-      googleEmail.trim() &&
-      googlePassword.trim() &&
-      googleConfirmPassword.trim()
-    ) {
-      if (googlePassword !== googleConfirmPassword) {
-        Alert.alert("Error", "Passwords do not match")
-        return
-      }
-      console.log("Signing in with Google:", { firstName, lastName, googleEmail, googlePassword })
+    try {
+      const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mobileNumber,
+          email: "", // optional for phone signup
+          password: phonePassword,
+          firstName,
+          lastName,
+          profileImage: "https://randomuser.me/api/portraits/lego/1.jpg",
+        }),
+      })
+
+      if (!response.ok) throw new Error("Failed to register user")
+
+      const newUser = await response.json()
+      console.log("✅ Registered new user:", newUser)
+      Alert.alert("Success", "Account created successfully!")
       navigation.navigate("Login")
-    } else {
-      Alert.alert("Error", "Please fill in all fields")
+    } catch (err) {
+      console.error(err)
+      Alert.alert("Error", "Failed to register. Please try again later.")
     }
+  } else {
+    Alert.alert("Error", "Please fill in all fields")
   }
+}
+
+  const handleGoogleSignIn = async () => {
+  if (
+    firstName.trim() &&
+    lastName.trim() &&
+    googleEmail.trim() &&
+    googlePassword.trim() &&
+    googleConfirmPassword.trim()
+  ) {
+    if (googlePassword !== googleConfirmPassword) {
+      Alert.alert("Error", "Passwords do not match")
+      return
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mobileNumber: "",
+          email: googleEmail,
+          password: googlePassword,
+          firstName,
+          lastName,
+          profileImage: "https://randomuser.me/api/portraits/lego/2.jpg",
+        }),
+      })
+
+      if (!response.ok) throw new Error("Failed to register user")
+
+      const newUser = await response.json()
+      console.log("✅ Registered new Google user:", newUser)
+      Alert.alert("Success", "Account created successfully!")
+      navigation.navigate("Login")
+    } catch (err) {
+      console.error(err)
+      Alert.alert("Error", "Failed to register. Please try again later.")
+    }
+  } else {
+    Alert.alert("Error", "Please fill in all fields")
+  }
+}
+
 
   const toggleAuthMode = (mode: AuthMode) => {
     setAuthMode(mode)
