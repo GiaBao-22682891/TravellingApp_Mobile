@@ -12,12 +12,21 @@ const HomeScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("Beach")
   const [searchText, setSearchText] = useState("")
 
-  // Filter accommodations based on selected category
-  const filteredAccommodations = (accommodationsData || []).filter((item) =>
-    item.typeOfPlace.toLowerCase().includes(selectedCategory.toLowerCase()),
-  )
+const filteredAccommodations = (accommodationsData || []).filter((item) => {
+  const matchesCategory =
+    selectedCategory === "All" ||
+    item.typeOfPlace.toLowerCase().includes(selectedCategory.toLowerCase())
 
-  const categories = ["Beach", "Mountain", "Camping"]
+  const matchesSearch =
+    searchText.trim() === "" ||
+    item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.location.toLowerCase().includes(searchText.toLowerCase())
+
+  return matchesCategory && matchesSearch
+})
+
+
+  const categories = ["All" ,"Beach", "Mountain", "Camping"]
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -28,7 +37,7 @@ const HomeScreen = () => {
       case "Camping":
         return "🏕️"
       default:
-        return "📍"
+        return "🗺️"
     }
   }
 

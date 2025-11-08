@@ -34,22 +34,23 @@ const ProfileScreen = () => {
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
-      { text: "Cancel", onPress: () => {} },
+      { text: "Cancel", style: "cancel" },
       {
         text: "Logout",
         onPress: () => {
-          logout()
-          Alert.alert("Success", "You have been logged out")
-          navigation.navigate("Login")
+          logout();
+          Alert.alert("Success", "You have been logged out");
+          navigation.navigate("Login");
         },
         style: "destructive",
       },
-    ])
-  }
+    ]);
+  };
+
 
   const handleEditProfile = () => {
-    Alert.alert("Edit Profile", "Edit profile feature coming soon!")
-  }
+  navigation.navigate("EditProfile");
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>

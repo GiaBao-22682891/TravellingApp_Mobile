@@ -13,6 +13,7 @@ import FilterScreen from "../screens/FilterScreen"
 import LoginScreen from "../screens/LoginScreen"
 import RegisterScreen from "../screens/RegisterScreen"
 import SuccessScreen from "../screens/SuccessScreen"
+import EditProfileScreen from "../screens/EditProfileScreen"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -36,6 +37,7 @@ const AppNavigator = () => {
         {/* --- Màn hình Xác thực (Authentication) --- */}
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
