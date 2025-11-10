@@ -1,32 +1,29 @@
 export type Facility = {
-  facilityId: string
+  id: string
   name: string
   category: string
-  id: string
 }
 
 export type Comment = {
-  commentId: string
+  id: string
   userId: string
   accommodationId: string
   text: string
   rating: number
-  id: string
 }
 
 export type User = {
-  userId: string
+  id: string
   mobileNumber: string
   email: string
   password: string
   firstName: string
   lastName: string
   profileImage: string // URL
-  id: string
 }
 
 export type Accommodation = {
-  accomodationId: string
+  id: string
   title: string
   description: string
   location: string
@@ -36,25 +33,22 @@ export type Accommodation = {
   numberOfGuest: number
   image: string
   facilityIds: string[]
-  id: string
 }
 
 export type Booking = {
-  bookingId: string
+  id: string
   userId: string
   accomodationId: string
   bookingDate: string
   bookingTime: string
   paymentMethod: string
   totalPrice: number
-  id: string
 }
 
 export type Favorite = {
-  favoriteId: string
+  id: string
   userId: string
   accomodationId: string
-  id: string
 }
 
 // --- Navigation ---
@@ -74,6 +68,8 @@ export type RootStackParamList = {
     bookingTime: string
     paymentMethod: string
     amount: number
+    accommodationId?: string;
+    userId?: string;
   }
   Login: undefined
   Register: undefined

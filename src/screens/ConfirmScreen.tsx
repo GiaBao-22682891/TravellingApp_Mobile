@@ -26,7 +26,7 @@ const handleConfirmBooking = async () => {
   }
 
   const newBooking = {
-    userId: currentUser.userId, // make sure you have user context
+    userId: currentUser.id, // make sure you have user context
     accomodationId: accommodation.accomodationId,
     bookingDate: new Date().toLocaleDateString(),
     bookingTime: new Date().toLocaleTimeString(),

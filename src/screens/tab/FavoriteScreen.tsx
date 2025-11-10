@@ -1,8 +1,8 @@
+import { useState, useMemo, useEffect } from "react"
 import { View, Text, StyleSheet, FlatList, TextInput, ActivityIndicator, Alert } from "react-native"
 import { useFetch } from "../../hook/useFetch"
 import type { Accommodation, Favorite } from "../../type/type"
 import AccommodationCard from "../../components/AccommodationCard"
-import { useState, useMemo } from "react"
 import { useUser } from "../../context/UserContext"
 
 const FavoriteScreen = () => {
@@ -10,12 +10,12 @@ const FavoriteScreen = () => {
   const { data: accommodations, loading: loadingAcc } = useFetch<Accommodation[]>("/accommodations")
   const { data: allFavorites, loading: loadingFav, error } = useFetch<Favorite[]>("/favorites")
   const [searchQuery, setSearchQuery] = useState("")
-
   const [favorites, setFavorites] = useState<Favorite[]>([])
 
-  useMemo(() => {
+  // Initialize current user's favorites
+  useEffect(() => {
     if (currentUser && allFavorites) {
-      setFavorites(allFavorites.filter(fav => fav.userId === currentUser.userId))
+      setFavorites(allFavorites.filter(fav => fav.userId === currentUser.id))
     }
   }, [currentUser, allFavorites])
 
@@ -30,24 +30,26 @@ const FavoriteScreen = () => {
       if (exists) {
         return prev.filter(fav => fav.accomodationId !== accommodationId)
       } else {
-        // Add a new favorite object with string IDs handled by TypeScript
-        const newFav: Favorite = {
-          favoriteId: "", // backend or state will assign actual string ID
-          userId: currentUser.userId,
-          accomodationId: accommodationId,
-          id: "" // can be left empty for now
-        }
-        return [...prev, newFav]
+        return [
+          ...prev,
+          {
+            id: "", // leave empty, backend/state will assign
+            userId: currentUser.id,
+            accomodationId: accommodationId
+          }
+        ]
       }
     })
   }
 
+  // Get favorite accommodations of current user
   const favoriteAccommodations = useMemo(() => {
     if (!accommodations) return []
     const favIds = favorites.map(fav => fav.accomodationId)
-    return accommodations.filter(acc => favIds.includes(acc.accomodationId))
+    return accommodations.filter(acc => favIds.includes(acc.id))
   }, [favorites, accommodations])
 
+  // Apply search filter
   const filteredAccommodations = useMemo(() => {
     return favoriteAccommodations.filter(acc =>
       acc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -73,6 +75,7 @@ const FavoriteScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -83,10 +86,11 @@ const FavoriteScreen = () => {
         />
       </View>
 
+      {/* Favorites List */}
       {filteredAccommodations.length > 0 ? (
         <FlatList
           data={filteredAccommodations}
-          keyExtractor={item => item.accomodationId}
+          keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <AccommodationCard
               accommodation={item}

@@ -18,7 +18,7 @@ const HomeScreen = () => {
   // Initialize current user's favorites
   useEffect(() => {
     if (currentUser && allFavorites) {
-      setFavorites(allFavorites.filter(fav => fav.userId === currentUser.userId))
+      setFavorites(allFavorites.filter(fav => fav.userId === currentUser.id))
     }
   }, [currentUser, allFavorites])
 
@@ -33,10 +33,9 @@ const HomeScreen = () => {
         return [
           ...prev,
           {
-            favoriteId: "", // leave empty; backend/state can handle
-            userId: currentUser.userId,
-            accomodationId: accommodationId,
-            id: "", // leave empty
+            id: "", // backend/state can generate
+            userId: currentUser.id,
+            accomodationId: accommodationId
           }
         ]
       }
@@ -105,7 +104,7 @@ const HomeScreen = () => {
         {/* Accommodations List */}
         <FlatList
           data={filteredAccommodations}
-          keyExtractor={item => item.accomodationId}
+          keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <AccommodationCard
               accommodation={item}
@@ -121,7 +120,6 @@ const HomeScreen = () => {
     </View>
   )
 }
-
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },

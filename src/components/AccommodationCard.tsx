@@ -25,16 +25,16 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({
 
   // Determine if current accommodation is favorited
   const isFavorite = favorites.some(
-    (fav) => fav.accomodationId === accommodation.accomodationId && fav.userId === currentUser?.userId
+    (fav) => fav.accomodationId === accommodation.id && fav.userId === currentUser?.id
   )
 
   const handlePress = () => {
-    navigation.navigate("AccommodationDetail", { accommodationId: accommodation.accomodationId })
+    navigation.navigate("AccommodationDetail", { accommodationId: accommodation.id })
   }
 
   const handleToggleFavorite = () => {
     if (!currentUser) return
-    onToggleFavorite(accommodation.accomodationId)
+    onToggleFavorite(accommodation.id)
   }
 
   return (

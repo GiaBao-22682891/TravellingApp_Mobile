@@ -1,104 +1,91 @@
 {
   "facilities": [
     {
-      "facilityId": 1,
+      "id": "a67b",
       "name": "Free WiFi",
-      "category": "Connectivity",
-      "id": "a67b"
+      "category": "Connectivity"
     },
     {
-      "facilityId": 2,
+      "id": "396e",
       "name": "Swimming Pool",
-      "category": "Recreation",
-      "id": "396e"
+      "category": "Recreation"
     },
     {
-      "facilityId": 3,
+      "id": "7da9",
       "name": "Gym",
-      "category": "Fitness",
-      "id": "7da9"
+      "category": "Fitness"
     },
     {
-      "facilityId": 4,
+      "id": "58a7",
       "name": "Air Conditioning",
-      "category": "Comfort",
-      "id": "58a7"
+      "category": "Comfort"
     },
     {
-      "facilityId": 5,
+      "id": "5ab6",
       "name": "Breakfast Included",
-      "category": "Dining",
-      "id": "5ab6"
+      "category": "Dining"
     },
     {
-      "facilityId": 6,
+      "id": "0fe0",
       "name": "Parking",
-      "category": "Convenience",
-      "id": "0fe0"
+      "category": "Convenience"
     },
     {
-      "facilityId": 7,
+      "id": "6171",
       "name": "Spa",
-      "category": "Wellness",
-      "id": "6171"
+      "category": "Wellness"
     },
     {
-      "facilityId": 8,
+      "id": "af56",
       "name": "Pet Friendly",
-      "category": "Special",
-      "id": "af56"
+      "category": "Special"
     }
   ],
   "users": [
     {
-      "userId": 1,
+      "id": "566b",
       "mobileNumber": "0901234567",
       "email": "alice@example.com",
       "password": "hashed_password_1",
       "firstName": "Alice",
       "lastName": "Nguyen",
-      "profileImage": "https://randomuser.me/api/portraits/women/1.jpg",
-      "id": "566b"
+      "profileImage": "https://randomuser.me/api/portraits/women/1.jpg"
     },
     {
-      "userId": 2,
+      "id": "3693",
       "mobileNumber": "0909876543",
       "email": "bob@example.com",
       "password": "hashed_password_2",
       "firstName": "Bob",
       "lastName": "Tran",
-      "profileImage": "https://randomuser.me/api/portraits/men/2.jpg",
-      "id": "3693"
+      "profileImage": "https://randomuser.me/api/portraits/men/2.jpg"
     },
     {
-      "userId": 3,
+      "id": "23ca",
       "mobileNumber": "0905556677",
       "email": "carol@example.com",
       "password": "hashed_password_3",
       "firstName": "Carol",
       "lastName": "Pham",
-      "profileImage": "https://randomuser.me/api/portraits/women/3.jpg",
-      "id": "23ca"
+      "profileImage": "https://randomuser.me/api/portraits/women/3.jpg"
     },
     {
-      "userId": 4,
+      "id": "a16e",
       "mobileNumber": "0912223344",
       "email": "david@example.com",
       "password": "hashed_password_4",
       "firstName": "David",
       "lastName": "Le",
-      "profileImage": "https://randomuser.me/api/portraits/men/4.jpg",
-      "id": "a16e"
+      "profileImage": "https://randomuser.me/api/portraits/men/4.jpg"
     },
     {
-      "userId": 5,
+      "id": "572d",
       "mobileNumber": "0933332222",
       "email": "emily@example.com",
       "password": "hashed_password_5",
       "firstName": "Emily",
       "lastName": "Vo",
-      "profileImage": "https://randomuser.me/api/portraits/women/5.jpg",
-      "id": "572d"
+      "profileImage": "https://randomuser.me/api/portraits/women/5.jpg"
     },
     {
       "id": "bda5",
@@ -121,7 +108,7 @@
   ],
   "accommodations": [
     {
-      "accomodationId": 1,
+      "id": "25fa",
       "title": "Luxury Beach Resort",
       "description": "A beautiful seaside resort with modern amenities and sea view rooms.",
       "location": "Nha Trang, Vietnam",
@@ -131,15 +118,14 @@
       "numberOfGuest": 4,
       "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
       "facilityIds": [
-        1,
-        2,
-        4,
-        5
-      ],
-      "id": "25fa"
+        "a67b",
+        "396e",
+        "58a7",
+        "5ab6"
+      ]
     },
     {
-      "accomodationId": 2,
+      "id": "c4d9",
       "title": "Cozy City Apartment",
       "description": "Modern apartment located in the heart of Ho Chi Minh City.",
       "location": "Ho Chi Minh City, Vietnam",
@@ -149,14 +135,13 @@
       "numberOfGuest": 2,
       "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
       "facilityIds": [
-        1,
-        4,
-        6
-      ],
-      "id": "c4d9"
+        "a67b",
+        "58a7",
+        "0fe0"
+      ]
     },
     {
-      "accomodationId": 3,
+      "id": "3395",
       "title": "Mountain View Villa",
       "description": "Peaceful villa surrounded by mountains, perfect for family retreats.",
       "location": "Da Lat, Vietnam",
@@ -166,15 +151,14 @@
       "numberOfGuest": 6,
       "image": "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
       "facilityIds": [
-        1,
-        3,
-        4,
-        6
-      ],
-      "id": "3395"
+        "a67b",
+        "7da9",
+        "58a7",
+        "0fe0"
+      ]
     },
     {
-      "accomodationId": 4,
+      "id": "e6f0",
       "title": "Miama Villa",
       "description": "Miama surrounded by mountains, perfect for family retreats.",
       "location": "Da Lat, Vietnam",
@@ -184,15 +168,14 @@
       "numberOfGuest": 6,
       "image": "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
       "facilityIds": [
-        1,
-        3,
-        4,
-        6
-      ],
-      "id": "e6f0"
+        "a67b",
+        "7da9",
+        "58a7",
+        "0fe0"
+      ]
     },
     {
-      "accomodationId": 5,
+      "id": "6e0c",
       "title": "Riverside Bungalow",
       "description": "Charming bungalow right by the river, ideal for couples.",
       "location": "Hoi An, Vietnam",
@@ -202,15 +185,14 @@
       "numberOfGuest": 2,
       "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
       "facilityIds": [
-        1,
-        5,
-        6,
-        8
-      ],
-      "id": "6e0c"
+        "a67b",
+        "5ab6",
+        "0fe0",
+        "af56"
+      ]
     },
     {
-      "accomodationId": 6,
+      "id": "8513",
       "title": "Urban Boutique Hotel",
       "description": "Trendy hotel with rooftop bar and city view rooms.",
       "location": "Hanoi, Vietnam",
@@ -220,138 +202,122 @@
       "numberOfGuest": 3,
       "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
       "facilityIds": [
-        1,
-        2,
-        4,
-        7
-      ],
-      "id": "8513"
+        "a67b",
+        "396e",
+        "58a7",
+        "6171"
+      ]
     }
   ],
   "bookings": [
     {
-      "bookingId": 1,
-      "userId": 1,
-      "accomodationId": 2,
+      "id": "4b18",
+      "userId": "566b",
+      "accomodationId": "c4d9",
       "bookingDate": "2025-11-12",
       "bookingTime": "14:00",
       "paymentMethod": "Credit Card",
-      "totalPrice": 180,
-      "id": "4b18"
+      "totalPrice": 180
     },
     {
-      "bookingId": 2,
-      "userId": 2,
-      "accomodationId": 1,
+      "id": "b6d8",
+      "userId": "3693",
+      "accomodationId": "25fa",
       "bookingDate": "2025-12-01",
       "bookingTime": "10:30",
       "paymentMethod": "Cash",
-      "totalPrice": 1000,
-      "id": "b6d8"
+      "totalPrice": 1000
     },
     {
-      "bookingId": 3,
-      "userId": 3,
-      "accomodationId": 3,
+      "id": "de9a",
+      "userId": "23ca",
+      "accomodationId": "3395",
       "bookingDate": "2025-11-15",
       "bookingTime": "09:45",
       "paymentMethod": "Credit Card",
-      "totalPrice": 540,
-      "id": "de9a"
+      "totalPrice": 540
     },
     {
-      "bookingId": 4,
-      "userId": 4,
-      "accomodationId": 5,
+      "id": "ce62",
+      "userId": "a16e",
+      "accomodationId": "6e0c",
       "bookingDate": "2025-11-20",
       "bookingTime": "11:15",
       "paymentMethod": "Cash",
-      "totalPrice": 300,
-      "id": "ce62"
+      "totalPrice": 300
     },
     {
-      "bookingId": 5,
-      "userId": 5,
-      "accomodationId": 6,
+      "id": "1ab7",
+      "userId": "572d",
+      "accomodationId": "8513",
       "bookingDate": "2025-12-22",
       "bookingTime": "16:00",
       "paymentMethod": "Credit Card",
-      "totalPrice": 600,
-      "id": "1ab7"
+      "totalPrice": 600
     }
   ],
   "comments": [
     {
-      "commentId": 1,
-      "userId": 1,
-      "accommodationId": 1,
+      "id": "f5c0",
+      "userId": "566b",
+      "accommodationId": "25fa",
       "text": "Amazing place with a stunning view of the beach!",
-      "rating": 5,
-      "id": "f5c0"
+      "rating": 5
     },
     {
-      "commentId": 2,
-      "userId": 2,
-      "accommodationId": 2,
+      "id": "d2f8",
+      "userId": "3693",
+      "accommodationId": "c4d9",
       "text": "Great location but the room was a bit small.",
-      "rating": 4,
-      "id": "d2f8"
+      "rating": 4
     },
     {
-      "commentId": 3,
-      "userId": 3,
-      "accommodationId": 3,
+      "id": "2e70",
+      "userId": "23ca",
+      "accommodationId": "3395",
       "text": "Perfect for a peaceful weekend getaway.",
-      "rating": 5,
-      "id": "2e70"
+      "rating": 5
     },
     {
-      "commentId": 4,
-      "userId": 4,
-      "accommodationId": 5,
+      "id": "0177",
+      "userId": "a16e",
+      "accommodationId": "6e0c",
       "text": "The riverside view was incredible, but breakfast could be improved.",
-      "rating": 4,
-      "id": "0177"
+      "rating": 4
     },
     {
-      "commentId": 5,
-      "userId": 5,
-      "accommodationId": 6,
+      "id": "e922",
+      "userId": "572d",
+      "accommodationId": "8513",
       "text": "The rooftop bar was amazing. Definitely coming back!",
-      "rating": 5,
-      "id": "e922"
+      "rating": 5
     }
   ],
   "favorites": [
     {
-      "favoriteId": 1,
-      "userId": 1,
-      "accomodationId": 3,
-      "id": "dd6e"
+      "id": "dd6e",
+      "userId": "566b",
+      "accomodationId": "3395"
     },
     {
-      "favoriteId": 2,
-      "userId": 2,
-      "accomodationId": 1,
-      "id": "d6f0"
+      "id": "d6f0",
+      "userId": "3693",
+      "accomodationId": "25fa"
     },
     {
-      "favoriteId": 3,
-      "userId": 3,
-      "accomodationId": 2,
-      "id": "ded0"
+      "id": "ded0",
+      "userId": "23ca",
+      "accomodationId": "c4d9"
     },
     {
-      "favoriteId": 4,
-      "userId": 4,
-      "accomodationId": 6,
-      "id": "d155"
+      "id": "d155",
+      "userId": "a16e",
+      "accomodationId": "8513"
     },
     {
-      "favoriteId": 5,
-      "userId": 5,
-      "accomodationId": 5,
-      "id": "e5db"
+      "id": "e5db",
+      "userId": "572d",
+      "accomodationId": "6e0c"
     }
   ]
 }

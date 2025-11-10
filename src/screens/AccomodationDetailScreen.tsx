@@ -11,7 +11,7 @@ type DetailNavigationProp = NativeStackNavigationProp<RootStackParamList>
 const AccommodationDetailScreen = () => {
   const navigation = useNavigation<DetailNavigationProp>()
   const route = useRoute()
-  const accommodationId = (route.params as any)?.accommodationId
+  const accommodationId = (route.params as { accommodationId: string })?.accommodationId
 
   const { data: allAccommodations } = useFetch<Accommodation[]>("/accommodations")
   const { data: allFacilities } = useFetch<Facility[]>("/facilities")
@@ -24,26 +24,27 @@ const AccommodationDetailScreen = () => {
   const [comments, setComments] = useState<Comment[]>([])
   const [visibleComments, setVisibleComments] = useState(2)
 
+  // Load accommodation
   useEffect(() => {
     if (allAccommodations && accommodationId) {
-      const found = allAccommodations.find((acc) => acc.accomodationId === accommodationId)
+      const found = allAccommodations.find(acc => acc.id === accommodationId)
       setAccommodation(found || null)
     }
   }, [allAccommodations, accommodationId])
 
+  // Load facilities
   useEffect(() => {
     if (accommodation && allFacilities) {
-      const facilityIds = Array.isArray(accommodation.facilityIds)
-        ? accommodation.facilityIds.map((f) => (typeof f === "object" ? (f as any).facilityId : f))
-        : []
-      const matchedFacilities = allFacilities.filter((f) => facilityIds.includes(f.facilityId))
+      const facilityIds = accommodation.facilityIds || []
+      const matchedFacilities = allFacilities.filter(f => facilityIds.includes(f.id))
       setFacilities(matchedFacilities)
     }
   }, [accommodation, allFacilities])
 
+  // Load comments
   useEffect(() => {
     if (accommodation && allComments) {
-      const accommodationComments = allComments.filter((c) => c.accommodationId === accommodation.accomodationId)
+      const accommodationComments = allComments.filter(c => c.accommodationId === accommodation.id)
       setComments(accommodationComments)
     }
   }, [accommodation, allComments])
@@ -61,16 +62,13 @@ const AccommodationDetailScreen = () => {
     )
   }
 
-  const getCommentUser = (userId: string): User | undefined => {
-    return allUsers?.find((u) => u.id === userId)
-  }
+  const getCommentUser = (userId: string): User | undefined =>
+    allUsers?.find(u => u.id === userId)
 
-  const handleShowAllComments = () => {
-    setVisibleComments(comments.length)
-  }
+  const handleShowAllComments = () => setVisibleComments(comments.length)
 
-  const getFacilityIcon = (facilityName: string): string => {
-    const iconMap: { [key: string]: string } = {
+  const getFacilityIcon = (facilityName: string) => {
+    const icons: Record<string, string> = {
       "Free WiFi": "wifi",
       "Swimming Pool": "water",
       Gym: "barbell",
@@ -78,12 +76,12 @@ const AccommodationDetailScreen = () => {
       "Breakfast Included": "restaurant",
       Parking: "car",
     }
-    return iconMap[facilityName] || "checkmark-circle"
+    return icons[facilityName] || "checkmark-circle"
   }
 
   return (
     <View style={styles.container}>
-      {/* Header with Back Button */}
+      {/* Back Button */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="chevron-back" size={28} color="#1a1a1a" />
       </TouchableOpacity>
@@ -92,14 +90,19 @@ const AccommodationDetailScreen = () => {
         {/* Hero Image */}
         <View style={styles.imageContainer}>
           <Image source={{ uri: accommodation.image }} style={styles.heroImage} resizeMode="cover" />
-
-          {/* Favorite Button */}
-          <TouchableOpacity onPress={() => setIsFavorite(!isFavorite)} style={styles.favoriteButton}>
-            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={28} color={isFavorite ? "#FF6B6B" : "#fff"} />
+          <TouchableOpacity
+            onPress={() => setIsFavorite(!isFavorite)}
+            style={styles.favoriteButton}
+          >
+            <Ionicons
+              name={isFavorite ? "heart" : "heart-outline"}
+              size={28}
+              color={isFavorite ? "#FF6B6B" : "#fff"}
+            />
           </TouchableOpacity>
         </View>
 
-        {/* Title and Location */}
+        {/* Title & Location */}
         <View style={styles.headerSection}>
           <Text style={styles.title}>{accommodation.title}</Text>
           <View style={styles.locationRow}>
@@ -117,12 +120,12 @@ const AccommodationDetailScreen = () => {
           <Text style={styles.description}>{accommodation.description}</Text>
         </View>
 
-        {/* Facilities & Services */}
+        {/* Facilities */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Facilities & services</Text>
           <View style={styles.facilitiesGrid}>
-            {facilities.slice(0, 4).map((facility) => (
-              <View key={facility.facilityId} style={styles.facilityItem}>
+            {facilities.slice(0, 4).map(facility => (
+              <View key={facility.id} style={styles.facilityItem}>
                 <View style={styles.facilityIconContainer}>
                   <Ionicons name={getFacilityIcon(facility.name) as any} size={24} color="#00BCD4" />
                 </View>
@@ -160,11 +163,10 @@ const AccommodationDetailScreen = () => {
             </View>
           </View>
 
-          {/* Comments List */}
-          {comments.slice(0, visibleComments).map((comment) => {
+          {comments.slice(0, visibleComments).map(comment => {
             const user = getCommentUser(comment.userId)
             return (
-              <View key={comment.commentId} style={styles.commentCard}>
+              <View key={comment.id} style={styles.commentCard}>
                 <View style={styles.commentHeader}>
                   <View style={styles.userInfo}>
                     <Image
@@ -172,9 +174,7 @@ const AccommodationDetailScreen = () => {
                       style={styles.userAvatar}
                     />
                     <View>
-                      <Text style={styles.userName}>
-                        {user?.firstName} {user?.lastName}
-                      </Text>
+                      <Text style={styles.userName}>{user?.firstName} {user?.lastName}</Text>
                       <Text style={styles.commentDate}>A few days ago</Text>
                     </View>
                   </View>
@@ -198,11 +198,10 @@ const AccommodationDetailScreen = () => {
           )}
         </View>
 
-        {/* Spacing */}
         <View style={{ height: 20 }} />
       </ScrollView>
 
-      {/* Book Now Button - Fixed at Bottom */}
+      {/* Bottom Book Now */}
       <View style={styles.bottomContainer}>
         <View>
           <Text style={styles.priceLabel}>Price per night</Text>
@@ -210,11 +209,7 @@ const AccommodationDetailScreen = () => {
         </View>
         <TouchableOpacity
           style={styles.bookButton}
-          onPress={() => {
-            navigation.navigate("BookingDetail", {
-              accommodation: accommodation,
-            })
-          }}
+          onPress={() => navigation.navigate("BookingDetail", { accommodation })}
         >
           <Text style={styles.bookButtonText}>Book now</Text>
         </TouchableOpacity>

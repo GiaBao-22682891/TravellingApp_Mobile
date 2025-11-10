@@ -26,10 +26,10 @@ const BookingScreen = () => {
         const accommodationsData: Accommodation[] = await accommodationsRes.json()
 
         // Filter user bookings and merge with accommodations
-        const userBookings = bookingsData.filter((b) => b.userId === currentUser.userId)
+        const userBookings = bookingsData.filter((b) => b.userId === currentUser.id)
         const merged = userBookings.map((b) => ({
           ...b,
-          accommodation: accommodationsData.find((acc) => acc.accomodationId === b.accomodationId),
+          accommodation: accommodationsData.find((acc) => acc.id === b.accomodationId),
         }))
 
         setBookings(merged)
@@ -83,7 +83,7 @@ const BookingScreen = () => {
 
       <FlatList
         data={bookings}
-        keyExtractor={(item) => item.bookingId.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <BookingCard booking={item} accommodation={item.accommodation} />}
         scrollEnabled={false}
         contentContainerStyle={styles.listContainer}
