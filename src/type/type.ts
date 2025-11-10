@@ -1,32 +1,32 @@
 export type Facility = {
-  facilityId: number
+  facilityId: string
   name: string
   category: string
-  id?: string
+  id: string
 }
 
 export type Comment = {
-  commentId: number
-  userId: number
-  accommodationId: number
+  commentId: string
+  userId: string
+  accommodationId: string
   text: string
   rating: number
-  id?: string
+  id: string
 }
 
 export type User = {
-  userId: number
+  userId: string
   mobileNumber: string
   email: string
   password: string
   firstName: string
   lastName: string
   profileImage: string // URL
-  id?: string
+  id: string
 }
 
 export type Accommodation = {
-  accomodationId: number
+  accomodationId: string
   title: string
   description: string
   location: string
@@ -35,29 +35,29 @@ export type Accommodation = {
   typeOfPlace: string
   numberOfGuest: number
   image: string
-  facilityIds: number[] // Changed from Facility[] to number[]
-  id?: string
+  facilityIds: string[]
+  id: string
 }
 
 export type Booking = {
-  bookingId: number
-  userId: number
-  accomodationId: number
+  bookingId: string
+  userId: string
+  accomodationId: string
   bookingDate: string
   bookingTime: string
   paymentMethod: string
   totalPrice: number
-  id?: string
+  id: string
 }
 
 export type Favorite = {
-  favoriteId: number
-  userId: number
-  accomodationId: number
-  id?: string
+  favoriteId: string
+  userId: string
+  accomodationId: string
+  id: string
 }
 
-// --- Định nghĩa cho Navigation ---
+// --- Navigation ---
 export type RootStackParamList = {
   Tabs:
     | {
@@ -65,10 +65,10 @@ export type RootStackParamList = {
         params?: TabParamList[keyof TabParamList]
       }
     | undefined
-  AccommodationDetail: { accommodationId: number }
+  AccommodationDetail: { accommodationId: string }
   BookingDetail: { accommodation: Accommodation; checkInDate?: string; checkOutDate?: string }
   Success: {
-    bookingId: number
+    bookingId: string
     referenceNumber: string
     bookingDate: string
     bookingTime: string

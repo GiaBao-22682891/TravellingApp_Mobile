@@ -61,8 +61,8 @@ const AccommodationDetailScreen = () => {
     )
   }
 
-  const getCommentUser = (userId: number): User | undefined => {
-    return allUsers?.find((u) => u.userId === userId)
+  const getCommentUser = (userId: string): User | undefined => {
+    return allUsers?.find((u) => u.id === userId)
   }
 
   const handleShowAllComments = () => {

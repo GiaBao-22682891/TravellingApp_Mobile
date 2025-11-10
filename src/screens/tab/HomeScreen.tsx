@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList, Text, ActivityIndicator } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useFetch } from "../../hook/useFetch"
@@ -16,13 +16,13 @@ const HomeScreen = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([])
 
   // Initialize current user's favorites
-  useMemo(() => {
+  useEffect(() => {
     if (currentUser && allFavorites) {
       setFavorites(allFavorites.filter(fav => fav.userId === currentUser.userId))
     }
   }, [currentUser, allFavorites])
 
-  const toggleFavorite = (accommodationId: number) => {
+  const toggleFavorite = (accommodationId: string) => {
     if (!currentUser) return
 
     setFavorites(prev => {
@@ -30,27 +30,20 @@ const HomeScreen = () => {
       if (exists) {
         return prev.filter(fav => fav.accomodationId !== accommodationId)
       } else {
-        const newFav: Favorite = {
-          favoriteId: prev.length + 1, // temporary, backend should generate
-          userId: currentUser.userId,
-          accomodationId: accommodationId
-        }
-        return [...prev, newFav]
+        return [
+          ...prev,
+          {
+            favoriteId: "", // leave empty; backend/state can handle
+            userId: currentUser.userId,
+            accomodationId: accommodationId,
+            id: "", // leave empty
+          }
+        ]
       }
     })
   }
 
-  const categories = ["All", "Beach", "Mountain", "Camping"]
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "Beach": return "🏖️"
-      case "Mountain": return "⛰️"
-      case "Camping": return "🏕️"
-      default: return "🗺️"
-    }
-  }
-
+  // Filter accommodations based on search and category
   const filteredAccommodations = useMemo(() => {
     if (!accommodations) return []
 
@@ -64,6 +57,7 @@ const HomeScreen = () => {
     })
   }, [accommodations, searchText, selectedCategory])
 
+  // Render empty state
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       {loadingAcc ? (
@@ -95,9 +89,11 @@ const HomeScreen = () => {
           {/* Categories */}
           <View style={styles.categoriesScroll}>
             <View style={styles.categoriesContainer}>
-              {categories.map(cat => (
+              {["All", "Beach", "Mountain", "Camping"].map(cat => (
                 <TouchableOpacity key={cat} onPress={() => setSelectedCategory(cat)} style={styles.categoryButton}>
-                  <Text style={styles.icon}>{getCategoryIcon(cat)}</Text>
+                  <Text style={styles.icon}>
+                    {cat === "Beach" ? "🏖️" : cat === "Mountain" ? "⛰️" : cat === "Camping" ? "🏕️" : "🗺️"}
+                  </Text>
                   <Text style={[styles.categoryText, selectedCategory === cat && styles.categoryTextActive]}>{cat}</Text>
                   {selectedCategory === cat && <View style={styles.underline} />}
                 </TouchableOpacity>
@@ -109,7 +105,7 @@ const HomeScreen = () => {
         {/* Accommodations List */}
         <FlatList
           data={filteredAccommodations}
-          keyExtractor={item => item.accomodationId.toString()}
+          keyExtractor={item => item.accomodationId}
           renderItem={({ item }) => (
             <AccommodationCard
               accommodation={item}
@@ -125,6 +121,7 @@ const HomeScreen = () => {
     </View>
   )
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },

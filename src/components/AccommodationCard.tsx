@@ -12,7 +12,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>
 interface AccommodationCardProps {
   accommodation: Accommodation
   favorites: Favorite[]          // All favorites of current user
-  onToggleFavorite: (accommodationId: number) => void
+  onToggleFavorite: (accommodationId: string) => void
 }
 
 const AccommodationCard: React.FC<AccommodationCardProps> = ({

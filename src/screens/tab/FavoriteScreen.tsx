@@ -11,18 +11,15 @@ const FavoriteScreen = () => {
   const { data: allFavorites, loading: loadingFav, error } = useFetch<Favorite[]>("/favorites")
   const [searchQuery, setSearchQuery] = useState("")
 
-  // Local state to manage favorites for current user
   const [favorites, setFavorites] = useState<Favorite[]>([])
 
-  // Initialize favorites for current user
   useMemo(() => {
     if (currentUser && allFavorites) {
       setFavorites(allFavorites.filter(fav => fav.userId === currentUser.userId))
     }
   }, [currentUser, allFavorites])
 
-  // Toggle favorite
-  const toggleFavorite = (accommodationId: number) => {
+  const toggleFavorite = (accommodationId: string) => {
     if (!currentUser) {
       Alert.alert("Not logged in", "You must log in to favorite accommodations.")
       return
@@ -31,28 +28,26 @@ const FavoriteScreen = () => {
     setFavorites(prev => {
       const exists = prev.find(fav => fav.accomodationId === accommodationId)
       if (exists) {
-        // Remove favorite
         return prev.filter(fav => fav.accomodationId !== accommodationId)
       } else {
-        // Add favorite
+        // Add a new favorite object with string IDs handled by TypeScript
         const newFav: Favorite = {
-          favoriteId: prev.length + 1, // temporary ID, ideally from backend
+          favoriteId: "", // backend or state will assign actual string ID
           userId: currentUser.userId,
-          accomodationId: accommodationId
+          accomodationId: accommodationId,
+          id: "" // can be left empty for now
         }
         return [...prev, newFav]
       }
     })
   }
 
-  // Filter accommodations to show only favorites
   const favoriteAccommodations = useMemo(() => {
     if (!accommodations) return []
     const favIds = favorites.map(fav => fav.accomodationId)
     return accommodations.filter(acc => favIds.includes(acc.accomodationId))
   }, [favorites, accommodations])
 
-  // Apply search filter
   const filteredAccommodations = useMemo(() => {
     return favoriteAccommodations.filter(acc =>
       acc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -78,7 +73,6 @@ const FavoriteScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -89,11 +83,10 @@ const FavoriteScreen = () => {
         />
       </View>
 
-      {/* Favorites List */}
       {filteredAccommodations.length > 0 ? (
         <FlatList
           data={filteredAccommodations}
-          keyExtractor={item => item.accomodationId.toString()}
+          keyExtractor={item => item.accomodationId}
           renderItem={({ item }) => (
             <AccommodationCard
               accommodation={item}
