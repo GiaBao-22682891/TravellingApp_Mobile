@@ -2,6 +2,7 @@ export type Facility = {
   facilityId: number
   name: string
   category: string
+  id?: string
 }
 
 export type Comment = {
@@ -10,6 +11,7 @@ export type Comment = {
   accommodationId: number
   text: string
   rating: number
+  id?: string
 }
 
 export type User = {
@@ -20,6 +22,7 @@ export type User = {
   firstName: string
   lastName: string
   profileImage: string // URL
+  id?: string
 }
 
 export type Accommodation = {
@@ -33,6 +36,7 @@ export type Accommodation = {
   numberOfGuest: number
   image: string
   facilityIds: number[] // Changed from Facility[] to number[]
+  id?: string
 }
 
 export type Booking = {
@@ -43,12 +47,14 @@ export type Booking = {
   bookingTime: string
   paymentMethod: string
   totalPrice: number
+  id?: string
 }
 
 export type Favorite = {
   favoriteId: number
   userId: number
   accomodationId: number
+  id?: string
 }
 
 // --- Định nghĩa cho Navigation ---

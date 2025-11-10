@@ -1,55 +1,64 @@
-"use client"
-
-import type React from "react"
+import React from "react"
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
-import type { Accommodation } from "../type/type"
-import { useState } from "react"
+import type { Accommodation, Favorite } from "../type/type"
 import { useNavigation } from "@react-navigation/native"
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import type { RootStackParamList } from "../type/type"
+import { useUser } from "../context/UserContext"
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>
 
 interface AccommodationCardProps {
   accommodation: Accommodation
-  onPress?: () => void
+  favorites: Favorite[]          // All favorites of current user
+  onToggleFavorite: (accommodationId: number) => void
 }
 
-const AccommodationCard: React.FC<AccommodationCardProps> = ({ accommodation, onPress }) => {
+const AccommodationCard: React.FC<AccommodationCardProps> = ({
+  accommodation,
+  favorites,
+  onToggleFavorite,
+}) => {
   const navigation = useNavigation<NavigationProp>()
-  const [isFavorite, setIsFavorite] = useState(false)
+  const { currentUser } = useUser()
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite)
-  }
+  // Determine if current accommodation is favorited
+  const isFavorite = favorites.some(
+    (fav) => fav.accomodationId === accommodation.accomodationId && fav.userId === currentUser?.userId
+  )
 
   const handlePress = () => {
     navigation.navigate("AccommodationDetail", { accommodationId: accommodation.accomodationId })
   }
 
+  const handleToggleFavorite = () => {
+    if (!currentUser) return
+    onToggleFavorite(accommodation.accomodationId)
+  }
+
   return (
     <TouchableOpacity onPress={handlePress} style={styles.cardContainer}>
       <View style={styles.cardWrapper}>
-        {/* Image Container */}
+        {/* Image */}
         <View style={styles.imageContainer}>
           <Image source={{ uri: accommodation.image }} style={styles.image} resizeMode="cover" />
 
-          {/* Heart Icon - Top Right */}
-          <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
-            <Ionicons name={isFavorite ? "heart" : "heart-outline"} size={24} color={isFavorite ? "#FF6B6B" : "#999"} />
+          {/* Heart Icon */}
+          <TouchableOpacity onPress={handleToggleFavorite} style={styles.favoriteButton}>
+            <Ionicons
+              name={isFavorite ? "heart" : "heart-outline"}
+              size={24}
+              color={isFavorite ? "#FF6B6B" : "#999"}
+            />
           </TouchableOpacity>
         </View>
 
         {/* Content */}
         <View style={styles.contentContainer}>
-          {/* Title */}
           <Text style={styles.title}>{accommodation.title}</Text>
-
-          {/* Type/Category */}
           <Text style={styles.category}>{accommodation.typeOfPlace}</Text>
 
-          {/* Rating and Price Row */}
           <View style={styles.ratingPriceRow}>
             <View style={styles.ratingContainer}>
               <Text style={styles.star}>★</Text>
@@ -67,9 +76,7 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({ accommodation, on
 }
 
 const styles = StyleSheet.create({
-  cardContainer: {
-    marginBottom: 16,
-  },
+  cardContainer: { marginBottom: 16 },
   cardWrapper: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -80,13 +87,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  imageContainer: {
-    position: "relative",
-  },
-  image: {
-    width: "100%",
-    height: 192,
-  },
+  imageContainer: { position: "relative" },
+  image: { width: "100%", height: 192 },
   favoriteButton: {
     position: "absolute",
     top: 12,
@@ -100,67 +102,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 4,
   },
-  dotsContainer: {
-    position: "absolute",
-    bottom: 8,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 4,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    backgroundColor: "#fff",
-    borderRadius: 4,
-  },
-  dotInactive: {
-    opacity: 0.5,
-  },
-  contentContainer: {
-    padding: 12,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1a1a1a",
-    marginBottom: 4,
-  },
-  category: {
-    fontSize: 14,
-    color: "#999",
-    marginBottom: 8,
-  },
-  ratingPriceRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  star: {
-    fontSize: 14,
-    color: "#FFB800",
-  },
-  rating: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1a1a1a",
-  },
-  price: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1a1a1a",
-  },
-  priceLabel: {
-    fontSize: 12,
-    fontWeight: "400",
-    color: "#999",
-  },
+  contentContainer: { padding: 12 },
+  title: { fontSize: 16, fontWeight: "600", color: "#1a1a1a", marginBottom: 4 },
+  category: { fontSize: 14, color: "#999", marginBottom: 8 },
+  ratingPriceRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  ratingContainer: { flexDirection: "row", alignItems: "center", gap: 4 },
+  star: { fontSize: 14, color: "#FFB800" },
+  rating: { fontSize: 14, fontWeight: "600", color: "#1a1a1a" },
+  price: { fontSize: 14, fontWeight: "600", color: "#1a1a1a" },
+  priceLabel: { fontSize: 12, fontWeight: "400", color: "#999" },
 })
 
 export default AccommodationCard

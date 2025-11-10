@@ -103,11 +103,20 @@
     {
       "id": "bda5",
       "mobileNumber": "0868641406",
-      "email": "",
+      "email": "diplomaneu1234@gmail.com",
       "password": "hello123",
       "firstName": "sd",
       "lastName": "To",
       "profileImage": "https://randomuser.me/api/portraits/lego/1.jpg"
+    },
+    {
+      "id": "9c93",
+      "mobileNumber": "",
+      "email": "22682891.bao@student.iuh.edu.vn",
+      "password": "hhh",
+      "firstName": "sd",
+      "lastName": "To",
+      "profileImage": "https://randomuser.me/api/portraits/lego/2.jpg"
     }
   ],
   "accommodations": [

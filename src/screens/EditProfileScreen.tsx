@@ -7,36 +7,43 @@ const EditProfileScreen = () => {
   const { currentUser, setCurrentUser } = useUser();
   const navigation = useNavigation();
 
-  const [firstName, setFirstName] = useState(currentUser?.firstName || "");
-  const [lastName, setLastName] = useState(currentUser?.lastName || "");
-  const [mobileNumber, setMobileNumber] = useState(currentUser?.mobileNumber || "");
-  const [profileImage, setProfileImage] = useState(currentUser?.profileImage || "");
+  if (!currentUser) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: "center", marginTop: 50 }}>No user data found.</Text>
+      </View>
+    );
+  }
+
+  const [form, setForm] = useState({
+    firstName: currentUser.firstName,
+    lastName: currentUser.lastName,
+    mobileNumber: currentUser.mobileNumber,
+    email: currentUser.email,
+    profileImage: currentUser.profileImage,
+  });
+
+  const handleChange = (key: string, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSave = async () => {
-    if (!currentUser) return;
-
     try {
-      const res = await fetch(`http://localhost:3000/users/${currentUser.userId}`, {
+      const res = await fetch(`http://localhost:3000/users/${currentUser.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...currentUser,
-          firstName,
-          lastName,
-          mobileNumber,
-          profileImage,
-        }),
+        body: JSON.stringify({ ...currentUser, ...form }),
       });
 
       if (!res.ok) throw new Error("Update failed");
+
       const updatedUser = await res.json();
       setCurrentUser(updatedUser);
-
       Alert.alert("Success", "Profile updated successfully");
       navigation.goBack();
     } catch (error) {
-      Alert.alert("Error", "Unable to update profile");
       console.error(error);
+      Alert.alert("Error", "Unable to update profile");
     }
   };
 
@@ -46,26 +53,32 @@ const EditProfileScreen = () => {
 
       <TextInput
         style={styles.input}
-        value={firstName}
-        onChangeText={setFirstName}
+        value={form.firstName}
+        onChangeText={(text) => handleChange("firstName", text)}
         placeholder="First Name"
       />
       <TextInput
         style={styles.input}
-        value={lastName}
-        onChangeText={setLastName}
+        value={form.lastName}
+        onChangeText={(text) => handleChange("lastName", text)}
         placeholder="Last Name"
       />
       <TextInput
         style={styles.input}
-        value={mobileNumber}
-        onChangeText={setMobileNumber}
+        value={form.mobileNumber}
+        onChangeText={(text) => handleChange("mobileNumber", text)}
         placeholder="Mobile Number"
       />
       <TextInput
         style={styles.input}
-        value={profileImage}
-        onChangeText={setProfileImage}
+        value={form.email}
+        onChangeText={(text) => handleChange("email", text)}
+        placeholder="Email"
+      />
+      <TextInput
+        style={styles.input}
+        value={form.profileImage}
+        onChangeText={(text) => handleChange("profileImage", text)}
         placeholder="Profile Image URL"
       />
 
