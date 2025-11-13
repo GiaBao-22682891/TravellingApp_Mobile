@@ -254,6 +254,20 @@
       "bookingTime": "16:00",
       "paymentMethod": "Credit Card",
       "totalPrice": 600
+    },
+    {
+      "id": "8f28",
+      "userId": "bda5",
+      "accommodationId": "c4d9",
+      "title": "Cozy City Apartment",
+      "price": 90,
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+      "paymentOption": "full",
+      "paymentMethod": "Credit card",
+      "bookingDate": "11/13/2025",
+      "bookingTime": "08:07 PM",
+      "referenceNumber": "03942000432664",
+      "totalAmount": 100
     }
   ],
   "comments": [

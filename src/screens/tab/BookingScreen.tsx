@@ -9,6 +9,7 @@ import type { Booking, Accommodation } from "../../type/type"
 interface BookingWithAccommodation extends Booking {
   accommodation?: Accommodation
 }
+const API_URL = "http://localhost:3000"
 
 const BookingScreen = () => {
   const { currentUser } = useUser()
@@ -20,9 +21,9 @@ const BookingScreen = () => {
       if (!currentUser) return
 
       try {
-        const bookingsRes = await fetch("http://localhost:3000/bookings")
+        const bookingsRes = await fetch(`${API_URL}/bookings`)
         const bookingsData: Booking[] = await bookingsRes.json()
-        const accommodationsRes = await fetch("http://localhost:3000/accommodations")
+        const accommodationsRes = await fetch(`${API_URL}/accommodations`)
         const accommodationsData: Accommodation[] = await accommodationsRes.json()
 
         // Filter user bookings and merge with accommodations

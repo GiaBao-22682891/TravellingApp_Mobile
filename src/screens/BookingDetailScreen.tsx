@@ -8,6 +8,7 @@ import type { RootStackParamList, Accommodation } from "../type/type"
 
 type BookingNavigationProp = NativeStackNavigationProp<RootStackParamList, "BookingDetail">
 type BookingRouteProp = RouteProp<RootStackParamList, "BookingDetail">
+const API_URL = "http://localhost:3000"
 
 const BookingDetailScreen = () => {
   const navigation = useNavigation<BookingNavigationProp>()
@@ -27,9 +28,13 @@ const BookingDetailScreen = () => {
   const totalPrice = basePrice + kayakFee + parkingFee
 
   const handleBookingSubmit = async () => {
-    if (!accommodation) return
+    if (!accommodation || !currentUser) {
+      Alert.alert("Error", "You must be logged in to book.")
+      return
+    }
 
     setIsLoading(true)
+
     try {
       const referenceNumber = String(Math.floor(Math.random() * 10000000000000)).padStart(14, "0")
       const now = new Date()
@@ -37,16 +42,43 @@ const BookingDetailScreen = () => {
       const bookingTime = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })
       const paymentMethodDisplay = paymentMethod === "card" ? "Credit card" : "Cash"
 
-      // Navigate to success screen
+      const newBooking = {
+        userId: currentUser.id,
+        accommodationId: accommodation.id,
+        title: accommodation.title,
+        price: accommodation.price,
+        image: accommodation.image,
+        paymentOption,
+        paymentMethod: paymentMethodDisplay,
+        bookingDate,
+        bookingTime,
+        referenceNumber,
+        totalAmount: totalPrice,
+      }
+
+      // ✅ Post booking to backend
+      const res = await fetch(`${API_URL}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBooking),
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to save booking")
+      }
+
+      const createdBooking = await res.json()
+
+      // ✅ Navigate to success screen
       navigation.navigate("Success", {
-        bookingId: String(Math.floor(Math.random() * 1000000)),
+        bookingId: createdBooking.id,
         referenceNumber,
         bookingDate,
         bookingTime,
         paymentMethod: paymentMethodDisplay,
         amount: totalPrice,
         accommodationId: accommodation.id,
-        userId: currentUser?.id ?? "0",
+        userId: currentUser.id,
       })
     } catch (error) {
       console.error("[BookingDetail] Booking error:", error)
@@ -55,6 +87,7 @@ const BookingDetailScreen = () => {
       setIsLoading(false)
     }
   }
+
 
   if (!accommodation) {
     return (
