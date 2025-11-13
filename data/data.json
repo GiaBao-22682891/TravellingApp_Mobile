@@ -291,6 +291,13 @@
       "accommodationId": "8513",
       "text": "The rooftop bar was amazing. Definitely coming back!",
       "rating": 5
+    },
+    {
+      "id": "56c2",
+      "accommodationId": "25fa",
+      "userId": "bda5",
+      "text": "hello",
+      "rating": 5
     }
   ],
   "favorites": [

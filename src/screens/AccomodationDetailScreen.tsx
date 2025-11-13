@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react"
-import { View, ScrollView, Image, Text, TouchableOpacity, StyleSheet } from "react-native"
+import { View, ScrollView, Image, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from "react-native"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { Ionicons } from "@expo/vector-icons"
 import { useFetch } from "../hook/useFetch"
 import type { Accommodation, Facility, Comment, User, RootStackParamList } from "../type/type"
+import { useUser } from "../context/UserContext"
 
 type DetailNavigationProp = NativeStackNavigationProp<RootStackParamList>
+const API_URL = "http://localhost:3000"
 
 const AccommodationDetailScreen = () => {
   const navigation = useNavigation<DetailNavigationProp>()
   const route = useRoute()
+  const { currentUser } = useUser()
   const accommodationId = (route.params as { accommodationId: string })?.accommodationId
 
   const { data: allAccommodations } = useFetch<Accommodation[]>("/accommodations")
@@ -23,6 +26,10 @@ const AccommodationDetailScreen = () => {
   const [facilities, setFacilities] = useState<Facility[]>([])
   const [comments, setComments] = useState<Comment[]>([])
   const [visibleComments, setVisibleComments] = useState(2)
+
+  const [commentMode, setCommentMode] = useState(false) // toggle input field
+  const [commentText, setCommentText] = useState("")
+  const [commentRating, setCommentRating] = useState(5) // optional: rating
 
   // Load accommodation
   useEffect(() => {
@@ -77,6 +84,48 @@ const AccommodationDetailScreen = () => {
       Parking: "car",
     }
     return icons[facilityName] || "checkmark-circle"
+  }
+
+  const handleSubmitComment = async () => {
+    if (!currentUser) {
+      Alert.alert("Login required", "You must be logged in to comment.")
+      return
+    }
+    if (!commentText.trim()) {
+      Alert.alert("Empty comment", "Please write something before submitting.")
+      return
+    }
+
+    const newComment: Omit<Comment, "id"> = {
+      accommodationId: accommodation!.id,
+      userId: currentUser.id,
+      text: commentText.trim(),
+      rating: commentRating,
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newComment),
+      })
+      const savedComment: Comment = await res.json()
+      setComments(prev => [savedComment, ...prev])
+      setCommentText("")
+      setCommentMode(false)
+      setVisibleComments(prev => prev + 1)
+    } catch (err) {
+      console.error("Error posting comment:", err)
+      Alert.alert("Error", "Failed to post comment. Try again.")
+    }
+  }
+
+  if (!accommodation) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    )
   }
 
   return (
@@ -140,28 +189,29 @@ const AccommodationDetailScreen = () => {
           )}
         </View>
 
-        {/* Reviews */}
+        {/* Reviews Section */}
         <View style={styles.section}>
           <View style={styles.reviewsHeader}>
             <Text style={styles.sectionTitle}>Reviews</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>See all ›</Text>
+            <TouchableOpacity onPress={() => setCommentMode(prev => !prev)}>
+              <Text style={styles.seeAllText}>Comment</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.ratingContainer}>
-            <Text style={styles.ratingNumber}>{accommodation.rating.toFixed(1)}</Text>
-            <View>
-              <View style={styles.starsContainer}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Text key={i} style={styles.star}>
-                    {i < Math.round(accommodation.rating) ? "★" : "☆"}
-                  </Text>
-                ))}
-              </View>
-              <Text style={styles.ratingCount}>({comments.length} reviews)</Text>
+          {commentMode && (
+            <View style={styles.commentInputContainer}>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="Write your review..."
+                value={commentText}
+                onChangeText={setCommentText}
+                multiline
+              />
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmitComment}>
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
             </View>
-          </View>
+          )}
 
           {comments.slice(0, visibleComments).map(comment => {
             const user = getCommentUser(comment.userId)
@@ -465,6 +515,30 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     color: "#666",
+  },
+  commentInputContainer: {
+    marginVertical: 12,
+  },
+  commentInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 14,
+    backgroundColor: "#fff",
+    minHeight: 60,
+    marginBottom: 8,
+  },
+  submitButton: {
+    backgroundColor: "#00BCD4",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignSelf: "flex-end",
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontWeight: "600",
   },
 })
 
