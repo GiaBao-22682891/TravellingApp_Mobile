@@ -38,7 +38,7 @@ export type Accommodation = {
 export type Booking = {
   id: string
   userId: string
-  accomodationId: string
+  accommodationId: string
   bookingDate: string
   bookingTime: string
   paymentMethod: string
@@ -48,7 +48,7 @@ export type Booking = {
 export type Favorite = {
   id: string
   userId: string
-  accomodationId: string
+  accommodationId: string
 }
 
 // --- Navigation ---

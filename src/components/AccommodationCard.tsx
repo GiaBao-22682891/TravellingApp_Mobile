@@ -20,31 +20,24 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({
   favorites,
   onToggleFavorite,
 }) => {
-  const navigation = useNavigation<NavigationProp>()
-  const { currentUser } = useUser()
+  const navigation = useNavigation<NavigationProp>();
 
   // Determine if current accommodation is favorited
-  const isFavorite = favorites.some(
-    (fav) => fav.accomodationId === accommodation.id && fav.userId === currentUser?.id
-  )
+  const isFavorite = favorites.some(fav => fav.accommodationId === accommodation.id);
 
   const handlePress = () => {
-    navigation.navigate("AccommodationDetail", { accommodationId: accommodation.id })
-  }
+    navigation.navigate("AccommodationDetail", { accommodationId: accommodation.id });
+  };
 
   const handleToggleFavorite = () => {
-    if (!currentUser) return
-    onToggleFavorite(accommodation.id)
-  }
+    onToggleFavorite(accommodation.id);
+  };
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.cardContainer}>
       <View style={styles.cardWrapper}>
-        {/* Image */}
         <View style={styles.imageContainer}>
           <Image source={{ uri: accommodation.image }} style={styles.image} resizeMode="cover" />
-
-          {/* Heart Icon */}
           <TouchableOpacity onPress={handleToggleFavorite} style={styles.favoriteButton}>
             <Ionicons
               name={isFavorite ? "heart" : "heart-outline"}
@@ -54,11 +47,9 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Content */}
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{accommodation.title}</Text>
           <Text style={styles.category}>{accommodation.typeOfPlace}</Text>
-
           <View style={styles.ratingPriceRow}>
             <View style={styles.ratingContainer}>
               <Text style={styles.star}>★</Text>
@@ -72,8 +63,8 @@ const AccommodationCard: React.FC<AccommodationCardProps> = ({
         </View>
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   cardContainer: { marginBottom: 16 },

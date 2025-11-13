@@ -2,14 +2,11 @@ import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import type { RootStackParamList } from "../type/type"
 
-// Import các Navigator phụ
 import TabNavigator from "./TabNavigator"
-
-// Import các màn hình Stack Screen
 
 import AccommodationDetailScreen from "../screens/AccomodationDetailScreen"
 import BookingDetailScreen from "../screens/BookingDetailScreen"
-import FilterScreen from "../screens/FilterScreen"
+// import FilterScreen from "../screens/FilterScreen"
 import LoginScreen from "../screens/LoginScreen"
 import RegisterScreen from "../screens/RegisterScreen"
 import SuccessScreen from "../screens/SuccessScreen"

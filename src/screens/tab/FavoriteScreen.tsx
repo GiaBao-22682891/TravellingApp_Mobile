@@ -1,51 +1,73 @@
 import { useState, useMemo, useEffect } from "react"
 import { View, Text, StyleSheet, FlatList, TextInput, ActivityIndicator, Alert } from "react-native"
-import { useFetch } from "../../hook/useFetch"
-import type { Accommodation, Favorite } from "../../type/type"
 import AccommodationCard from "../../components/AccommodationCard"
+import type { Accommodation, Favorite } from "../../type/type"
 import { useUser } from "../../context/UserContext"
+import { useFetch } from "../../hook/useFetch"
+
+const API_URL = "http://localhost:3000"
 
 const FavoriteScreen = () => {
   const { currentUser } = useUser()
   const { data: accommodations, loading: loadingAcc } = useFetch<Accommodation[]>("/accommodations")
-  const { data: allFavorites, loading: loadingFav, error } = useFetch<Favorite[]>("/favorites")
-  const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState<Favorite[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [loadingFav, setLoadingFav] = useState(false)
 
-  // Initialize current user's favorites
-  useEffect(() => {
-    if (currentUser && allFavorites) {
-      setFavorites(allFavorites.filter(fav => fav.userId === currentUser.id))
+  // Fetch current user's favorites
+  const fetchFavorites = async () => {
+    if (!currentUser) return
+    setLoadingFav(true)
+    try {
+      const res = await fetch(`${API_URL}/favorites`)
+      const data: Favorite[] = await res.json()
+      setFavorites(data.filter(fav => fav.userId === currentUser.id))
+    } catch (err) {
+      console.error("Failed to fetch favorites:", err)
+    } finally {
+      setLoadingFav(false)
     }
-  }, [currentUser, allFavorites])
+  }
 
-  const toggleFavorite = (accommodationId: string) => {
+  useEffect(() => {
+    fetchFavorites()
+  }, [currentUser])
+
+  // Toggle favorite
+  const toggleFavorite = async (accommodationId: string) => {
     if (!currentUser) {
       Alert.alert("Not logged in", "You must log in to favorite accommodations.")
       return
     }
 
-    setFavorites(prev => {
-      const exists = prev.find(fav => fav.accomodationId === accommodationId)
+    const exists = favorites.find(fav => fav.accommodationId === accommodationId)
+
+    try {
       if (exists) {
-        return prev.filter(fav => fav.accomodationId !== accommodationId)
+        // DELETE from backend
+        await fetch(`${API_URL}/favorites/${exists.id}`, { method: "DELETE" })
+        setFavorites(prev => prev.filter(fav => fav.accommodationId !== accommodationId))
       } else {
-        return [
-          ...prev,
-          {
-            id: "", // leave empty, backend/state will assign
-            userId: currentUser.id,
-            accomodationId: accommodationId
-          }
-        ]
+        // POST to backend
+        const newFav: Omit<Favorite, "id"> = { userId: currentUser.id, accommodationId }
+        const res = await fetch(`${API_URL}/favorites`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newFav),
+        })
+        const saved = await res.json()
+        setFavorites(prev => [...prev, saved])
       }
-    })
+    } catch (err) {
+      console.error("Error updating favorites:", err)
+      Alert.alert("Error", "Failed to update favorites.")
+    }
   }
 
-  // Get favorite accommodations of current user
+  // Get favorite accommodations
   const favoriteAccommodations = useMemo(() => {
     if (!accommodations) return []
-    const favIds = favorites.map(fav => fav.accomodationId)
+    const favIds = favorites.map(fav => fav.accommodationId)
     return accommodations.filter(acc => favIds.includes(acc.id))
   }, [favorites, accommodations])
 
@@ -61,14 +83,6 @@ const FavoriteScreen = () => {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0066cc" />
-      </View>
-    )
-  }
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Failed to load favorites</Text>
       </View>
     )
   }
@@ -126,7 +140,6 @@ const styles = StyleSheet.create({
   emptyContainer: { flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 20 },
   emptyText: { fontSize: 18, fontWeight: "600", marginBottom: 8, color: "#333" },
   emptySubtext: { fontSize: 14, color: "#999", textAlign: "center" },
-  errorText: { fontSize: 16, color: "#cc0000", textAlign: "center" },
 })
 
 export default FavoriteScreen

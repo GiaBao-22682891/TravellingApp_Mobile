@@ -29,7 +29,7 @@ const BookingScreen = () => {
         const userBookings = bookingsData.filter((b) => b.userId === currentUser.id)
         const merged = userBookings.map((b) => ({
           ...b,
-          accommodation: accommodationsData.find((acc) => acc.id === b.accomodationId),
+          accommodation: accommodationsData.find((acc) => acc.id === b.accommodationId),
         }))
 
         setBookings(merged)

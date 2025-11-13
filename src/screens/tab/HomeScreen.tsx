@@ -1,51 +1,74 @@
 import { useState, useMemo, useEffect } from "react"
-import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList, Text, ActivityIndicator } from "react-native"
+import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList, Text, ActivityIndicator, Alert } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useFetch } from "../../hook/useFetch"
 import AccommodationCard from "../../components/AccommodationCard"
 import type { Accommodation, Favorite } from "../../type/type"
 import { useUser } from "../../context/UserContext"
 
+const API_URL = "http://localhost:3000"
+
 const HomeScreen = () => {
   const { currentUser } = useUser()
   const { data: accommodations, loading: loadingAcc, error: errorAcc } = useFetch<Accommodation[]>("/accommodations")
-  const { data: allFavorites } = useFetch<Favorite[]>("/favorites")
-  
+  const [favorites, setFavorites] = useState<Favorite[]>([])
   const [searchText, setSearchText] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [favorites, setFavorites] = useState<Favorite[]>([])
+  const [loadingFav, setLoadingFav] = useState(false)
 
-  // Initialize current user's favorites
-  useEffect(() => {
-    if (currentUser && allFavorites) {
-      setFavorites(allFavorites.filter(fav => fav.userId === currentUser.id))
-    }
-  }, [currentUser, allFavorites])
-
-  const toggleFavorite = (accommodationId: string) => {
+  // Fetch favorites for current user
+  const fetchFavorites = async () => {
     if (!currentUser) return
+    setLoadingFav(true)
+    try {
+      const res = await fetch(`${API_URL}/favorites`)
+      const data: Favorite[] = await res.json()
+      setFavorites(data.filter(fav => fav.userId === currentUser.id))
+    } catch (err) {
+      console.error("Failed to fetch favorites:", err)
+    } finally {
+      setLoadingFav(false)
+    }
+  }
 
-    setFavorites(prev => {
-      const exists = prev.find(fav => fav.accomodationId === accommodationId)
+  useEffect(() => {
+    fetchFavorites()
+  }, [currentUser])
+
+  // Handle toggle favorite
+  const toggleFavorite = async (accommodationId: string) => {
+    if (!currentUser) {
+      Alert.alert("Not logged in", "You must log in to favorite accommodations.")
+      return
+    }
+
+    const exists = favorites.find(fav => fav.accommodationId === accommodationId)
+
+    try {
       if (exists) {
-        return prev.filter(fav => fav.accomodationId !== accommodationId)
+        // DELETE from backend
+        await fetch(`${API_URL}/favorites/${exists.id}`, { method: "DELETE" })
+        setFavorites(prev => prev.filter(fav => fav.accommodationId !== accommodationId))
       } else {
-        return [
-          ...prev,
-          {
-            id: "", // backend/state can generate
-            userId: currentUser.id,
-            accomodationId: accommodationId
-          }
-        ]
+        // POST to backend
+        const newFav: Omit<Favorite, "id"> = { userId: currentUser.id, accommodationId }
+        const res = await fetch(`${API_URL}/favorites`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newFav),
+        })
+        const saved = await res.json()
+        setFavorites(prev => [...prev, saved])
       }
-    })
+    } catch (err) {
+      console.error("Error updating favorites:", err)
+      Alert.alert("Error", "Failed to update favorites.")
+    }
   }
 
   // Filter accommodations based on search and category
   const filteredAccommodations = useMemo(() => {
     if (!accommodations) return []
-
     return accommodations.filter(acc => {
       const matchesCategory = selectedCategory === "All" || acc.typeOfPlace.toLowerCase() === selectedCategory.toLowerCase()
       const matchesSearch =
@@ -59,7 +82,7 @@ const HomeScreen = () => {
   // Render empty state
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      {loadingAcc ? (
+      {loadingAcc || loadingFav ? (
         <ActivityIndicator size="large" color="#00BCD4" />
       ) : errorAcc ? (
         <Text style={styles.emptyText}>Error: {errorAcc}</Text>
