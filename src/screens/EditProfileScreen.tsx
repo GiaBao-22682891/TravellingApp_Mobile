@@ -30,6 +30,8 @@ const EditProfileScreen = () => {
   const handleSave = async () => {
     try {
       const res = await fetch(`http://localhost:3000/users/${currentUser.id}`, {
+      // const res = await fetch(`http://192.168.1.7:3000/users/${currentUser.id}`, {
+
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...currentUser, ...form }),

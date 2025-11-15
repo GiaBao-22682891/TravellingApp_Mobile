@@ -9,6 +9,7 @@ import type { RootStackParamList, Accommodation } from "../type/type"
 type BookingNavigationProp = NativeStackNavigationProp<RootStackParamList, "BookingDetail">
 type BookingRouteProp = RouteProp<RootStackParamList, "BookingDetail">
 const API_URL = "http://localhost:3000"
+// const API_URL1 = "http://192.168.1.7:3000"
 
 const BookingDetailScreen = () => {
   const navigation = useNavigation<BookingNavigationProp>()

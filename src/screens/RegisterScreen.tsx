@@ -15,6 +15,7 @@ import type { RootStackParamList } from "../type/type"
 
 type AuthMode = "phone" | "google"
 const API_URL = "http://localhost:3000"
+// const API_URL1 = "http://192.168.1.7:3000"
 
 const RegisterScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()

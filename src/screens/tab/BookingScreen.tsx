@@ -10,6 +10,7 @@ interface BookingWithAccommodation extends Booking {
   accommodation?: Accommodation
 }
 const API_URL = "http://localhost:3000"
+// const API_URL1 = "http://192.168.1.7:3000"
 
 const BookingScreen = () => {
   const { currentUser } = useUser()
@@ -122,7 +123,7 @@ const BookingCard = ({ booking, accommodation }: BookingCardProps) => {
         </View>
 
         <View style={styles.bookingFooter}>
-          <Text style={styles.bookingPrice}>${booking.totalPrice}</Text>
+          <Text style={styles.bookingPrice}>${booking.totalAmount}</Text>
           <View style={styles.paymentBadge}>
             <Text style={styles.paymentText}>{booking.paymentMethod}</Text>
           </View>

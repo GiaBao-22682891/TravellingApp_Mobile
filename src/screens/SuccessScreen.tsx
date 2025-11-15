@@ -10,7 +10,16 @@ const SuccessScreen = () => {
   const navigation = useNavigation<SuccessNavigationProp>()
   const route = useRoute()
 
-  const bookingDetails = (route.params as any)?.booking || { }
+  const {
+  referenceNumber,
+  bookingDate,
+  bookingTime,
+  paymentMethod,
+  amount,
+  bookingId,
+  accommodationId,
+  userId
+} = route.params as any
 
   const handleViewBooking = () => {
     navigation.navigate("Tabs", {
@@ -35,27 +44,27 @@ const SuccessScreen = () => {
         <View style={styles.detailsCard}>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Ref number</Text>
-            <Text style={styles.detailValue}>{bookingDetails.referenceNumber}</Text>
+            <Text style={styles.detailValue}>{referenceNumber}</Text>
           </View>
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Date</Text>
-            <Text style={styles.detailValue}>{bookingDetails.bookingDate}</Text>
+            <Text style={styles.detailValue}>{bookingDate}</Text>
           </View>
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Time</Text>
-            <Text style={styles.detailValue}>{bookingDetails.bookingTime}</Text>
+            <Text style={styles.detailValue}>{bookingTime}</Text>
           </View>
 
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Payment method</Text>
-            <Text style={styles.detailValue}>{bookingDetails.paymentMethod}</Text>
+            <Text style={styles.detailValue}>{paymentMethod}</Text>
           </View>
 
           <View style={[styles.detailRow, styles.lastDetailRow]}>
             <Text style={styles.detailLabel}>Amount</Text>
-            <Text style={styles.detailValue}>${bookingDetails.amount}</Text>
+            <Text style={styles.detailValue}>${amount}</Text>
           </View>
         </View>
 

@@ -6,6 +6,7 @@ import { useUser } from "../../context/UserContext"
 import { useFetch } from "../../hook/useFetch"
 
 const API_URL = "http://localhost:3000"
+// const API_URL1 = "http://192.168.1.7:3000"
 
 const FavoriteScreen = () => {
   const { currentUser } = useUser()

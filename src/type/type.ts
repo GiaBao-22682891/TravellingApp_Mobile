@@ -42,7 +42,7 @@ export type Booking = {
   bookingDate: string
   bookingTime: string
   paymentMethod: string
-  totalPrice: number
+  totalAmount: number
 }
 
 export type Favorite = {

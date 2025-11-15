@@ -7,6 +7,7 @@ import type { Accommodation, Favorite } from "../../type/type"
 import { useUser } from "../../context/UserContext"
 
 const API_URL = "http://localhost:3000"
+// const API_URL1 = "http://192.168.1.7:3000"
 
 const HomeScreen = () => {
   const { currentUser } = useUser()
