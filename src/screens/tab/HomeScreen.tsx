@@ -1,10 +1,11 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList, Text, ActivityIndicator, Alert } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useFetch } from "../../hook/useFetch"
 import AccommodationCard from "../../components/AccommodationCard"
 import type { Accommodation, Favorite } from "../../type/type"
 import { useUser } from "../../context/UserContext"
+import { useFocusEffect } from "@react-navigation/native"
 
 const API_URL = "http://localhost:3000"
 // const API_URL1 = "http://192.168.1.7:3000"
@@ -32,9 +33,11 @@ const HomeScreen = () => {
     }
   }
 
-  useEffect(() => {
-    fetchFavorites()
-  }, [currentUser])
+  useFocusEffect(
+    useCallback(() => {
+      fetchFavorites()
+    }, [currentUser])
+  )
 
   // Handle toggle favorite
   const toggleFavorite = async (accommodationId: string) => {

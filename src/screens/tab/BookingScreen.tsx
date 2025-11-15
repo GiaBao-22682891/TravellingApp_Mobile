@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { View, Text, Image, StyleSheet, FlatList } from "react-native"
+import { View, Text, Image, StyleSheet, FlatList, ActivityIndicator, Alert } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 import { Ionicons } from "@expo/vector-icons"
 import { useUser } from "../../context/UserContext"
@@ -16,6 +16,29 @@ const BookingScreen = () => {
   const { currentUser } = useUser()
   const [bookings, setBookings] = useState<BookingWithAccommodation[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  const handleCancelBooking = async (bookingId: string) => {
+    Alert.alert(
+      "Cancel Booking",
+      "Are you sure you want to cancel this booking?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await fetch(`${API_URL}/bookings/${bookingId}`, { method: "DELETE" })
+              setBookings(prev => prev.filter(b => b.id !== bookingId))
+            } catch (err) {
+              console.error(err)
+              Alert.alert("Error", "Failed to cancel booking.")
+            }
+          }
+        }
+      ]
+    )
+  }
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -59,9 +82,7 @@ const BookingScreen = () => {
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Loading...</Text>
-        </View>
+        <ActivityIndicator size="large" color="#0066cc" animating={true} />
       </View>
     )
   }
@@ -86,7 +107,7 @@ const BookingScreen = () => {
       <FlatList
         data={bookings}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <BookingCard booking={item} accommodation={item.accommodation} />}
+        renderItem={({ item }) => <BookingCard booking={item} accommodation={item.accommodation} onCancel={() => handleCancelBooking} />}
         scrollEnabled={false}
         contentContainerStyle={styles.listContainer}
       />
@@ -94,12 +115,14 @@ const BookingScreen = () => {
   )
 }
 
+//đáng ra cái này phải tạo ở chỗ components
 interface BookingCardProps {
   booking: Booking
   accommodation?: Accommodation
+  onCancel: () => void
 }
 
-const BookingCard = ({ booking, accommodation }: BookingCardProps) => {
+const BookingCard = ({ booking, accommodation, onCancel }: BookingCardProps) => {
   if (!accommodation) return null
 
   return (
@@ -120,6 +143,15 @@ const BookingCard = ({ booking, accommodation }: BookingCardProps) => {
             <Ionicons name="time-outline" size={16} color="#00BCD4" />
             <Text style={styles.detailText}>{booking.bookingTime}</Text>
           </View>
+        </View>
+
+        <View style={{ position: "absolute", top: 8, right: 8 }}>
+          <Ionicons
+            name="close-circle"
+            size={22}
+            color="#ff4444"
+            onPress={onCancel}
+          />
         </View>
 
         <View style={styles.bookingFooter}>

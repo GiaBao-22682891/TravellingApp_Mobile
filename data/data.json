@@ -214,6 +214,7 @@
       "id": "4b18",
       "userId": "566b",
       "accomodationId": "c4d9",
+      "title": "An Awesome Place",
       "bookingDate": "2025-11-12",
       "bookingTime": "14:00",
       "paymentMethod": "Credit Card",
@@ -223,6 +224,7 @@
       "id": "b6d8",
       "userId": "3693",
       "accomodationId": "25fa",
+      "title": "An Awesome Place",
       "bookingDate": "2025-12-01",
       "bookingTime": "10:30",
       "paymentMethod": "Cash",
@@ -232,6 +234,7 @@
       "id": "de9a",
       "userId": "23ca",
       "accomodationId": "3395",
+      "title": "An Awesome Place",
       "bookingDate": "2025-11-15",
       "bookingTime": "09:45",
       "paymentMethod": "Credit Card",
@@ -241,6 +244,7 @@
       "id": "ce62",
       "userId": "a16e",
       "accomodationId": "6e0c",
+      "title": "An Awesome Place",
       "bookingDate": "2025-11-20",
       "bookingTime": "11:15",
       "paymentMethod": "Cash",
@@ -250,52 +254,25 @@
       "id": "1ab7",
       "userId": "572d",
       "accomodationId": "8513",
+      "title": "An Awesome Place",
       "bookingDate": "2025-12-22",
       "bookingTime": "16:00",
       "paymentMethod": "Credit Card",
       "totalPrice": 600
     },
     {
-      "id": "8f28",
+      "id": "ef0b",
       "userId": "bda5",
       "accommodationId": "c4d9",
       "title": "Cozy City Apartment",
       "price": 90,
       "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
       "paymentOption": "full",
-      "paymentMethod": "Credit card",
-      "bookingDate": "11/13/2025",
-      "bookingTime": "08:07 PM",
-      "referenceNumber": "03942000432664",
+      "paymentMethod": "Cash",
+      "bookingDate": "11/16/2025",
+      "bookingTime": "12:03 AM",
+      "referenceNumber": "00975625354810",
       "totalAmount": 100
-    },
-    {
-      "id": "c40d",
-      "userId": "bda5",
-      "accommodationId": "25fa",
-      "title": "Luxury Beach Resort",
-      "price": 250,
-      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-      "paymentOption": "full",
-      "paymentMethod": "Cash",
-      "bookingDate": "11/14/2025",
-      "bookingTime": "7:30 PM",
-      "referenceNumber": "09466793981355",
-      "totalAmount": 260
-    },
-    {
-      "id": "4053",
-      "userId": "bda5",
-      "accommodationId": "25fa",
-      "title": "Luxury Beach Resort",
-      "price": 250,
-      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-      "paymentOption": "full",
-      "paymentMethod": "Cash",
-      "bookingDate": "11/15/2025",
-      "bookingTime": "08:20 PM",
-      "referenceNumber": "07292480721209",
-      "totalAmount": 260
     }
   ],
   "comments": [
@@ -369,14 +346,9 @@
       "accomodationId": "6e0c"
     },
     {
-      "id": "17de",
+      "id": "23a2",
       "userId": "bda5",
-      "accommodationId": "25fa"
-    },
-    {
-      "id": "a364",
-      "userId": "bda5",
-      "accommodationId": "3395"
+      "accommodationId": "6e0c"
     }
   ]
 }

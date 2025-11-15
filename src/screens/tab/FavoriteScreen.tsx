@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import { View, Text, StyleSheet, FlatList, TextInput, ActivityIndicator, Alert } from "react-native"
 import AccommodationCard from "../../components/AccommodationCard"
 import type { Accommodation, Favorite } from "../../type/type"
 import { useUser } from "../../context/UserContext"
 import { useFetch } from "../../hook/useFetch"
+import { useFocusEffect } from "@react-navigation/native"
 
 const API_URL = "http://localhost:3000"
 // const API_URL1 = "http://192.168.1.7:3000"
@@ -30,10 +31,12 @@ const FavoriteScreen = () => {
     }
   }
 
-  useEffect(() => {
-    fetchFavorites()
-  }, [currentUser])
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchFavorites()
+    }, [currentUser])
+  )
+  
   // Toggle favorite
   const toggleFavorite = async (accommodationId: string) => {
     if (!currentUser) {
@@ -58,6 +61,7 @@ const FavoriteScreen = () => {
         })
         const saved = await res.json()
         setFavorites(prev => [...prev, saved])
+
       }
     } catch (err) {
       console.error("Error updating favorites:", err)
@@ -83,7 +87,7 @@ const FavoriteScreen = () => {
   if (loadingAcc || loadingFav) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0066cc" />
+        <ActivityIndicator size="large" color="#0066cc" animating={true} />
       </View>
     )
   }
