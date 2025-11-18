@@ -10,7 +10,7 @@ interface BookingWithAccommodation extends Booking {
   accommodation?: Accommodation
 }
 const API_URL = "http://localhost:3000"
-// const API_URL1 = "http://192.168.1.7:3000"
+// const API_URL = "http://172.20.10.2:3000"
 
 const BookingScreen = () => {
   const { currentUser } = useUser()

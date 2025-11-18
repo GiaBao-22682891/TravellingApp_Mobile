@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react"
-import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList, Text, ActivityIndicator, Alert } from "react-native"
+import { View, ScrollView, TextInput, TouchableOpacity, StyleSheet, FlatList, Text, ActivityIndicator, Alert, useWindowDimensions } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { useFetch } from "../../hook/useFetch"
 import AccommodationCard from "../../components/AccommodationCard"
@@ -8,7 +8,7 @@ import { useUser } from "../../context/UserContext"
 import { useFocusEffect } from "@react-navigation/native"
 
 const API_URL = "http://localhost:3000"
-// const API_URL1 = "http://192.168.1.7:3000"
+// const API_URL = "http://172.20.10.2:3000"
 
 const HomeScreen = () => {
   const { currentUser } = useUser()
@@ -17,6 +17,8 @@ const HomeScreen = () => {
   const [searchText, setSearchText] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [loadingFav, setLoadingFav] = useState(false)
+  // const { width } = useWindowDimensions();
+  // const isWide = width >= 900;
 
   // Fetch favorites for current user
   const fetchFavorites = async () => {
@@ -132,6 +134,8 @@ const HomeScreen = () => {
         <FlatList
           data={filteredAccommodations}
           keyExtractor={item => item.id}
+          // numColumns={isWide ? 2 : 1}
+          // columnWrapperStyle={isWide ? { gap: 16 } : undefined}
           renderItem={({ item }) => (
             <AccommodationCard
               accommodation={item}

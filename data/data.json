@@ -89,7 +89,7 @@
     },
     {
       "id": "bda5",
-      "mobileNumber": "0868641406",
+      "mobileNumber": "0868641407",
       "email": "diplomaneu1234@gmail.com",
       "password": "hello123",
       "firstName": "sd",
@@ -104,6 +104,24 @@
       "firstName": "sd",
       "lastName": "To",
       "profileImage": "https://randomuser.me/api/portraits/lego/2.jpg"
+    },
+    {
+      "id": "6b1b",
+      "mobileNumber": "0868641406",
+      "email": "tophangiabao@gmail.com",
+      "password": "test1234",
+      "firstName": "Hao",
+      "lastName": "Tester",
+      "profileImage": "https://randomuser.me/api/portraits/lego/1.jpg"
+    },
+    {
+      "id": "7e37",
+      "mobileNumber": "0989001427",
+      "email": "tophangiabao@gmail.com",
+      "password": "hello12345",
+      "firstName": "Bao",
+      "lastName": "Te",
+      "profileImage": "https://randomuser.me/api/portraits/lego/1.jpg"
     }
   ],
   "accommodations": [
@@ -207,6 +225,102 @@
         "58a7",
         "6171"
       ]
+    },
+    {
+      "id": "9b21",
+      "title": "Tropical Garden Resort",
+      "description": "A peaceful eco-resort surrounded by tropical gardens and natural ponds.",
+      "location": "Phu Quoc, Vietnam",
+      "price": 160,
+      "rating": 4.6,
+      "typeOfPlace": "Beach",
+      "numberOfGuest": 4,
+      "image": "https://images.unsplash.com/photo-1505691723518-36a9fd6e43bf",
+      "facilityIds": [
+        "a67b",
+        "5ab6",
+        "58a7",
+        "0fe0"
+      ]
+    },
+    {
+      "id": "a129",
+      "title": "Rooftop Modern Loft",
+      "description": "Stylish loft apartment with rooftop access and modern furnishing.",
+      "location": "Da Nang, Vietnam",
+      "price": 150,
+      "rating": 4.7,
+      "typeOfPlace": "City",
+      "numberOfGuest": 3,
+      "image": "https://images.unsplash.com/photo-1507089947368-19c1da9775ae",
+      "facilityIds": [
+        "a67b",
+        "58a7",
+        "396e"
+      ]
+    },
+    {
+      "id": "d7ef",
+      "title": "Sapa Cloudy Homestay",
+      "description": "Traditional style homestay overlooking terraced rice fields and mountain clouds.",
+      "location": "Sapa, Vietnam",
+      "price": 80,
+      "rating": 4.3,
+      "typeOfPlace": "Mountain",
+      "numberOfGuest": 2,
+      "image": "https://images.unsplash.com/photo-1523413363574-c30aa1c2a516",
+      "facilityIds": [
+        "a67b",
+        "5ab6"
+      ]
+    },
+    {
+      "id": "bd34",
+      "title": "Lakeside Wooden Lodge",
+      "description": "Rustic lodge located next to a crystal-clear lakeside, perfect for fishing and kayaking.",
+      "location": "Hoa Binh, Vietnam",
+      "price": 140,
+      "rating": 4.5,
+      "typeOfPlace": "Camping",
+      "numberOfGuest": 4,
+      "image": "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
+      "facilityIds": [
+        "58a7",
+        "0fe0",
+        "af56"
+      ]
+    },
+    {
+      "id": "4be2",
+      "title": "Forest Cabin Retreat",
+      "description": "A cozy wooden cabin surrounded by pine forests, ideal for relaxation.",
+      "location": "Da Lat, Vietnam",
+      "price": 110,
+      "rating": 4.4,
+      "typeOfPlace": "Mountain",
+      "numberOfGuest": 3,
+      "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+      "facilityIds": [
+        "a67b",
+        "7da9",
+        "0fe0"
+      ]
+    },
+    {
+      "id": "fa82",
+      "title": "Skyline Penthouse Suite",
+      "description": "Luxury penthouse offering panoramic city views and modern interior design.",
+      "location": "Ho Chi Minh City, Vietnam",
+      "price": 320,
+      "rating": 4.9,
+      "typeOfPlace": "City",
+      "numberOfGuest": 2,
+      "image": "https://images.unsplash.com/photo-1501183638710-841dd1904471",
+      "facilityIds": [
+        "a67b",
+        "58a7",
+        "396e"
+      ]
     }
   ],
   "bookings": [
@@ -273,6 +387,62 @@
       "bookingTime": "12:03 AM",
       "referenceNumber": "00975625354810",
       "totalAmount": 100
+    },
+    {
+      "id": "3836",
+      "userId": "6b1b",
+      "accommodationId": "c4d9",
+      "title": "Cozy City Apartment",
+      "price": 90,
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+      "paymentOption": "full",
+      "paymentMethod": "Credit card",
+      "bookingDate": "11/16/2025",
+      "bookingTime": "10:43 AM",
+      "referenceNumber": "01211217143675",
+      "totalAmount": 100
+    },
+    {
+      "id": "6ace",
+      "userId": "6b1b",
+      "accommodationId": "25fa",
+      "title": "Luxury Beach Resort",
+      "price": 250,
+      "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+      "paymentOption": "full",
+      "paymentMethod": "Cash",
+      "bookingDate": "11/16/2025",
+      "bookingTime": "12:39 PM",
+      "referenceNumber": "06254002716512",
+      "totalAmount": 260
+    },
+    {
+      "id": "014a",
+      "userId": "6b1b",
+      "accommodationId": "c4d9",
+      "title": "Cozy City Apartment",
+      "price": 90,
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+      "paymentOption": "full",
+      "paymentMethod": "Credit card",
+      "bookingDate": "11/16/2025",
+      "bookingTime": "12:52 PM",
+      "referenceNumber": "07635912710823",
+      "totalAmount": 100
+    },
+    {
+      "id": "1056",
+      "userId": "7e37",
+      "accommodationId": "c4d9",
+      "title": "Cozy City Apartment",
+      "price": 90,
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+      "paymentOption": "full",
+      "paymentMethod": "Credit card",
+      "bookingDate": "11/16/2025",
+      "bookingTime": "1:21 PM",
+      "referenceNumber": "03894000468933",
+      "totalAmount": 100
     }
   ],
   "comments": [
@@ -316,6 +486,34 @@
       "accommodationId": "25fa",
       "userId": "bda5",
       "text": "hello",
+      "rating": 5
+    },
+    {
+      "id": "60f3",
+      "accommodationId": "c4d9",
+      "userId": "6b1b",
+      "text": "What's a beautiful place to live!",
+      "rating": 5
+    },
+    {
+      "id": "bbad",
+      "accommodationId": "c4d9",
+      "userId": "6b1b",
+      "text": "Hao lo",
+      "rating": 5
+    },
+    {
+      "id": "f607",
+      "accommodationId": "e6f0",
+      "userId": "6b1b",
+      "text": "hello",
+      "rating": 5
+    },
+    {
+      "id": "4e2d",
+      "accommodationId": "c4d9",
+      "userId": "7e37",
+      "text": "this is the best place i have been",
       "rating": 5
     }
   ],

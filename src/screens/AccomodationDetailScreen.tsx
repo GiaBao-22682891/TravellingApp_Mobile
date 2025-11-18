@@ -9,6 +9,8 @@ import { useUser } from "../context/UserContext"
 
 type DetailNavigationProp = NativeStackNavigationProp<RootStackParamList>
 const API_URL = "http://localhost:3000"
+// const API_URL = "http://172.20.10.2:3000"
+
 
 const AccommodationDetailScreen = () => {
   const navigation = useNavigation<DetailNavigationProp>()
