@@ -18,26 +18,33 @@ const BookingScreen = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const handleCancelBooking = async (bookingId: string) => {
-    Alert.alert(
-      "Cancel Booking",
-      "Are you sure you want to cancel this booking?",
-      [
-        { text: "No", style: "cancel" },
-        {
-          text: "Yes",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await fetch(`${API_URL}/bookings/${bookingId}`, { method: "DELETE" })
-              setBookings(prev => prev.filter(b => b.id !== bookingId))
-            } catch (err) {
-              console.error(err)
-              Alert.alert("Error", "Failed to cancel booking.")
-            }
-          }
-        }
-      ]
-    )
+    // Alert.alert(
+    //   "Cancel Booking",
+    //   "Are you sure you want to cancel this booking?",
+    //   [
+    //     { text: "No", style: "cancel" },
+    //     {
+    //       text: "Yes",
+    //       style: "destructive",
+    //       onPress: async () => {
+    //         try {
+    //           await fetch(`${API_URL}/bookings/${bookingId}`, { method: "DELETE" })
+    //           setBookings(prev => prev.filter(b => b.id !== bookingId))
+    //         } catch (err) {
+    //           console.error(err)
+    //           Alert.alert("Error", "Failed to cancel booking.")
+    //         }
+    //       }
+    //     }
+    //   ]
+    // )
+    try {
+      await fetch(`${API_URL}/bookings/${bookingId}`, { method: "DELETE" })
+      setBookings(prev => prev.filter(b => b.id !== bookingId))
+    } catch (err) {
+      console.error(err)
+      Alert.alert("Error", "Failed to cancel booking.")
+    }
   }
 
   useEffect(() => {
@@ -107,7 +114,7 @@ const BookingScreen = () => {
       <FlatList
         data={bookings}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <BookingCard booking={item} accommodation={item.accommodation} onCancel={() => handleCancelBooking} />}
+        renderItem={({ item }) => <BookingCard booking={item} accommodation={item.accommodation} onCancel={handleCancelBooking} />}
         scrollEnabled={false}
         contentContainerStyle={styles.listContainer}
       />
@@ -119,7 +126,7 @@ const BookingScreen = () => {
 interface BookingCardProps {
   booking: Booking
   accommodation?: Accommodation
-  onCancel: () => void
+  onCancel: (id: string) => void
 }
 
 const BookingCard = ({ booking, accommodation, onCancel }: BookingCardProps) => {
@@ -150,7 +157,7 @@ const BookingCard = ({ booking, accommodation, onCancel }: BookingCardProps) => 
             name="close-circle"
             size={22}
             color="#ff4444"
-            onPress={onCancel}
+            onPress={() => onCancel(booking.id)}
           />
         </View>
 
